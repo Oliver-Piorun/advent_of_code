@@ -5,10 +5,7 @@ fn main() -> io::Result<()> {
     let file = File::open("input")?;
     let lines: Vec<i32> = BufReader::new(file)
         .lines()
-        .map(|line| {
-            line.map(|line_str| line_str.parse::<i32>().unwrap())
-                .unwrap()
-        })
+        .map(|line| line.unwrap().parse::<i32>().unwrap())
         .collect();
 
     for i in 0..lines.len() {
