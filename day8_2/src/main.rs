@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut swapped_instruction = false;
 
     let mut executed_instruction_indices = HashSet::new();
-    let mut instruction_index: i32 = 0;
+    let mut instruction_index = 0;
     let mut accumulator = 0;
 
     loop {
