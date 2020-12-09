@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 None
             })
-            .filter_map(|bag| bag)
+            .filter_map(|child_bag| child_bag)
             .collect();
 
         bags.insert(bag, child_bags);
