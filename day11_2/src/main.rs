@@ -35,6 +35,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                         result[i][j] = '#';
                         changed_seat = true;
                     } else {
+                        // Keep empty seat
                         result[i][j] = 'L';
                     }
                 } else if character == '#' {
