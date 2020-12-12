@@ -1,6 +1,17 @@
 use std::{cmp::max, error::Error, io::BufReader};
 use std::{fs::File, io::BufRead};
 
+static DIRECTIONS: &[(isize, isize)] = &[
+    (-1, 0),  // Top
+    (1, 0),   // Bottom
+    (0, -1),  // Left
+    (0, 1),   // Right
+    (-1, -1), // Top left
+    (-1, 1),  // Top right
+    (1, -1),  // Bottom left
+    (1, 1),   // Bottom right
+];
+
 fn main() -> Result<(), Box<dyn Error>> {
     let file = File::open("input")?;
     let mut characters: Vec<Vec<char>> = BufReader::new(file)
@@ -70,21 +81,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn get_num_occupied_seats(i: usize, j: usize, characters: &[Vec<char>]) -> i32 {
     let mut num_occupied_seats = 0;
 
-    let directions = vec![
-        (-1, 0),  // Top
-        (1, 0),   // Bottom
-        (0, -1),  // Left
-        (0, 1),   // Right
-        (-1, -1), // Top left
-        (-1, 1),  // Top right
-        (1, -1),  // Bottom left
-        (1, 1),   // Bottom right
-    ];
-
     let max = max(characters.len(), characters[0].len());
 
     // Iterate over all directions
-    for (k, l) in directions {
+    for (k, l) in DIRECTIONS {
         // Use the factor to follow the current direction
         for factor in 1..max as isize {
             let row_index = i as isize + k * factor;
