@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut best_bus = (
         0,        // bus id
-        i32::MAX, // calculated_bus_timestamp
+        i32::MAX, // calculated bus timestamp
     );
 
     for bus_id in bus_ids {
