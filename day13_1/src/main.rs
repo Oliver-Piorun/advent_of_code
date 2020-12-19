@@ -8,22 +8,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(|line| line.unwrap())
         .collect();
 
-    let earliest_timestamp = lines[0].parse::<i32>().unwrap();
+    let earliest_timestamp = lines[0].parse::<i64>().unwrap();
     let bus_ids = lines[1]
         .split(',')
         .filter(|bus_timestamp| *bus_timestamp != "x")
-        .map(|bus_timestamp| bus_timestamp.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
+        .map(|bus_timestamp| bus_timestamp.parse::<i64>().unwrap())
+        .collect::<Vec<i64>>();
 
     let mut best_bus = (
         0,        // bus id
-        i32::MAX, // calculated bus timestamp
+        i64::MAX, // calculated bus timestamp
     );
 
     for bus_id in bus_ids {
         let bus_timestamp = bus_id;
-        let multiples = (earliest_timestamp as f64 / bus_timestamp as f64).ceil() as i32;
-        let calculated_bus_timestamp = bus_timestamp * multiples;
+        let calculated_bus_timestamp = get_earliest_timestamp(earliest_timestamp, bus_timestamp);
 
         // Check if this bus is better / we have to wait less
         if calculated_bus_timestamp < best_bus.1 {
@@ -42,4 +41,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
 
     Ok(())
+}
+
+fn get_earliest_timestamp(target_timestamp: i64, bus_timestamp: i64) -> i64 {
+    let multiplier = (target_timestamp as f64 / bus_timestamp as f64).ceil() as i64;
+
+    bus_timestamp * multiplier
 }
