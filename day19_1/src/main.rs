@@ -57,7 +57,7 @@ fn resolve_rules(mut rule: String, rules: &HashMap<i32, &str>) -> Vec<String> {
                     .map(|child_rule| child_rule.parse::<i32>().unwrap());
 
                 if let Some(child_rule_id) = child_rule_id_option {
-                    // Resolve the child rules of the current child rule
+                    // Resolve the child rules of the child rule
                     let resolved_child_rules =
                         resolve_rules(rules[&child_rule_id].to_string(), rules);
 
