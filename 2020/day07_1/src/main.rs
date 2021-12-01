@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 None
             })
-            .filter_map(|child_bag| child_bag)
+            .flatten()
             .collect();
 
         bags.insert(bag, child_bags);
@@ -62,7 +62,7 @@ fn can_hold_shiny_gold_bag(bag: &str, bags: &HashMap<String, HashSet<String>>) -
             return true;
         }
 
-        if can_hold_shiny_gold_bag(&child_bag, bags) {
+        if can_hold_shiny_gold_bag(child_bag, bags) {
             return true;
         }
     }
