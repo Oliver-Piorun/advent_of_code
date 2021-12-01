@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         });
     }
 
-    println!("{}", num_yes);
+    println!("{num_yes}");
 
     Ok(())
 }

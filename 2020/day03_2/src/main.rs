@@ -34,7 +34,7 @@ fn main() -> io::Result<()> {
             }
         }
 
-        println!("{} {} {}", right, down, num_trees);
+        println!("{right} {down} {num_trees}");
 
         if num_multiplied_trees == 0 {
             num_multiplied_trees = num_trees;
@@ -43,7 +43,7 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("{}", num_multiplied_trees);
+    println!("{num_multiplied_trees}");
 
     Ok(())
 }

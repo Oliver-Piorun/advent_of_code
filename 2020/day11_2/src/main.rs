@@ -74,7 +74,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         });
 
-    println!("{}", num_occupied_seats);
+    println!("{num_occupied_seats}");
 
     Ok(())
 }

@@ -16,7 +16,7 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("{}", num_valid_passports);
+    println!("{num_valid_passports}");
 
     Ok(())
 }

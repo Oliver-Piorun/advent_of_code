@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if calculated_bus_timestamp - bus_timestamp_offet as i64 == current_timestamp {
             // Check if we processed all buses
             if bus_index + 1 >= buses.len() {
-                println!("{}", current_timestamp);
+                println!("{current_timestamp}");
                 break;
             }
 

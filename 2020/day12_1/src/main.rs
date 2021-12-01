@@ -16,7 +16,7 @@ impl Direction {
             1 => Direction::East,
             2 => Direction::South,
             3 => Direction::West,
-            _ => panic!("Unhandled value! ({})", value),
+            _ => panic!("Unhandled value! ({value})"),
         }
     }
 }
@@ -72,7 +72,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     Direction::West => x -= value,
                 };
             }
-            _ => panic!("Unhandled action! ({})", action),
+            _ => panic!("Unhandled action! ({action})"),
         }
     }
 

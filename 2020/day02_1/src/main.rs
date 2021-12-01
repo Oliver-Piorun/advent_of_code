@@ -37,12 +37,12 @@ fn main() -> io::Result<()> {
 
         // Check if password is valid
         if num_occurences >= min && num_occurences <= max {
-            println!("{} {} {} {}", min, max, letter, password);
+            println!("{min} {max} {letter} {password}");
             num_valid_passwords += 1;
         }
     }
 
-    println!("{}", num_valid_passwords);
+    println!("{num_valid_passwords}");
 
     Ok(())
 }

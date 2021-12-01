@@ -33,7 +33,7 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("{}", num_trees);
+    println!("{num_trees}");
 
     Ok(())
 }

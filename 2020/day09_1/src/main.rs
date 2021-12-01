@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Check if we did not find a fitting pair
         if !found {
-            println!("{}", number);
+            println!("{number}");
             break;
         }
     }

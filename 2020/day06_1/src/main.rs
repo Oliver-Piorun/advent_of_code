@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         num_yes += questions.len();
     }
 
-    println!("{}", num_yes);
+    println!("{num_yes}");
 
     Ok(())
 }

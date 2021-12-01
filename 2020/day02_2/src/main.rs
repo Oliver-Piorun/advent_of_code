@@ -30,12 +30,12 @@ fn main() -> io::Result<()> {
         if (password.chars().nth(first_index - 1).unwrap().to_string() == letter)
             ^ (password.chars().nth(second_index - 1).unwrap().to_string() == letter)
         {
-            println!("{} {} {} {}", first_index, second_index, letter, password);
+            println!("{first_index} {second_index} {letter} {password}");
             num_valid_passwords += 1;
         }
     }
 
-    println!("{}", num_valid_passwords);
+    println!("{num_valid_passwords}");
 
     Ok(())
 }

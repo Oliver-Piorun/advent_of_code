@@ -42,7 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let num_child_bags = count_child_bags("shiny gold bag", &bags);
 
-    println!("{}", num_child_bags);
+    println!("{num_child_bags}");
 
     Ok(())
 }

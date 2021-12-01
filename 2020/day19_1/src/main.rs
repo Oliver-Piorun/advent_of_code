@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    println!("{}", num_matching_messages);
+    println!("{num_matching_messages}");
 
     Ok(())
 }

@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     });
 
-    println!("{}", num_can_hold_shiny_gold_bag);
+    println!("{num_can_hold_shiny_gold_bag}");
 
     Ok(())
 }

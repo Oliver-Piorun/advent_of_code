@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 x += value * waypoint_x;
                 y += value * waypoint_y;
             }
-            _ => panic!("Unhandled action! ({})", action),
+            _ => panic!("Unhandled action! ({action})"),
         }
     }
 

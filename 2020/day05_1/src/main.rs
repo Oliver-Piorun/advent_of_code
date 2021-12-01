@@ -50,7 +50,7 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("{}", highest_seat_id);
+    println!("{highest_seat_id}");
 
     Ok(())
 }

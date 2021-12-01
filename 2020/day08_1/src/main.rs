@@ -32,11 +32,11 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
             "jmp" => instruction_index += argument,
             "nop" => instruction_index += 1,
-            _ => panic!("Unhandled operation! ({})", operation),
+            _ => panic!("Unhandled operation! ({operation})"),
         }
     }
 
-    println!("{}", accumulator);
+    println!("{accumulator}");
 
     Ok(())
 }

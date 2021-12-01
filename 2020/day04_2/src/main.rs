@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    println!("{}", num_valid_passports);
+    println!("{num_valid_passports}");
 
     Ok(())
 }
