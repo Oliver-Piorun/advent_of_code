@@ -1,4 +1,4 @@
-#![feature(drain_filter)]
+#![feature(vec_retain_mut)]
 use std::{collections::HashSet, fs, io};
 
 #[derive(Default, Clone, Debug)]
@@ -95,24 +95,22 @@ fn part2(drawn_numbers: &[u8], boards: &mut Vec<Board>) {
     // Iterate over each drawn number
     for drawn_number in drawn_numbers {
         // Iterate over each board and keep the ones which did not win yet
-        *boards = boards
-            .drain_filter(|board| {
-                // Mark the drawn number and check if the board just won
-                if !mark_and_check_for_win(*drawn_number, board) {
-                    // Board did not won, so keep it
-                    return true;
-                }
+        boards.retain_mut(|board| {
+            // Mark the drawn number and check if the board just won
+            if !mark_and_check_for_win(*drawn_number, board) {
+                // Board did not won, so keep it
+                return true;
+            }
 
-                // Get the sum of unmarked numbers
-                let sum_of_unmarked_numbers = get_sum_of_ummarked_numbers(board);
+            // Get the sum of unmarked numbers
+            let sum_of_unmarked_numbers = get_sum_of_ummarked_numbers(board);
 
-                // Calculate the score
-                last_score = sum_of_unmarked_numbers * *drawn_number as u32;
+            // Calculate the score
+            last_score = sum_of_unmarked_numbers * *drawn_number as u32;
 
-                // Board did win, so do not keep it
-                false
-            })
-            .collect::<Vec<_>>();
+            // Board did win, so do not keep it
+            false
+        });
 
         // Check if there are boards which did not win yet
         if boards.is_empty() {
