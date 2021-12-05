@@ -1,12 +1,12 @@
 #![feature(vec_retain_mut)]
 use std::{collections::HashSet, fs, io};
 
-#[derive(Default, Clone, Debug)]
+#[derive(Default, Clone)]
 struct Board {
     pub numbers: [[BoardNumber; 5]; 5],
 }
 
-#[derive(Default, Clone, Debug)]
+#[derive(Default, Clone)]
 struct BoardNumber {
     pub number: u8,
     pub marked: bool,
