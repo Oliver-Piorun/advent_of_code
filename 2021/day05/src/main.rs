@@ -1,6 +1,6 @@
 #![feature(int_abs_diff)]
 use std::{
-    cmp::{max, Ordering},
+    cmp::max,
     collections::HashMap,
     fs::File,
     io::{self, BufRead, BufReader},
@@ -74,16 +74,8 @@ fn get_num_two_or_more_occurrences(vent_lines: &[&VentLine]) -> u16 {
         let x2 = vent_line.x2;
         let y2 = vent_line.y2;
 
-        let x_step = match x1.cmp(&x2) {
-            Ordering::Less => 1,
-            Ordering::Greater => -1,
-            Ordering::Equal => 0,
-        };
-        let y_step = match y1.cmp(&y2) {
-            Ordering::Less => 1,
-            Ordering::Greater => -1,
-            Ordering::Equal => 0,
-        };
+        let x_step = x2.cmp(&x1) as i32;
+        let y_step = y2.cmp(&y1) as i32;
 
         // Calculate the number of required steps
         let x_abs = x1.abs_diff(x2);
