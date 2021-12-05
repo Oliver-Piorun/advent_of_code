@@ -85,10 +85,11 @@ fn get_num_two_or_more_occurrences(vent_lines: &[&VentLine]) -> u16 {
             Ordering::Equal => 0,
         };
 
+        // Calculate the number of required steps
         let x_abs = x1.abs_diff(x2);
         let y_abs = y1.abs_diff(y2);
-
         let num_steps = max(x_abs, y_abs) + 1;
+
         let mut x = x1;
         let mut y = y1;
 
