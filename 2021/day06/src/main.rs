@@ -19,7 +19,7 @@ fn main() -> io::Result<()> {
 fn part1(fish_timers: &mut Vec<u8>) {
     // Simulate 80 days
     for _ in 0..80 {
-        let mut num_new_fishes = 0;
+        let mut num_new_fish = 0;
 
         // Iterate over each fish timer
         for fish_timer in fish_timers.iter_mut() {
@@ -29,7 +29,7 @@ fn part1(fish_timers: &mut Vec<u8>) {
                 *fish_timer = 6;
 
                 // Increase the number of new fish
-                num_new_fishes += 1;
+                num_new_fish += 1;
             } else {
                 // Fish is not ready to create a new fish yet
                 *fish_timer -= 1;
@@ -37,7 +37,7 @@ fn part1(fish_timers: &mut Vec<u8>) {
         }
 
         // Add the new fishes
-        for _ in 0..num_new_fishes {
+        for _ in 0..num_new_fish {
             fish_timers.push(8);
         }
     }
@@ -60,11 +60,11 @@ fn part2(fish_timers: &mut Vec<u8>) {
 
     // Simulate 256 days
     for _ in 0..256 {
-        // Fishes at the front are ready to create new fishes
+        // Fishes at the front are ready to create new fish
         let current_fish_timer = fish_timer_queue.pop_front().unwrap();
 
         // Move the new fishes to the back (fish timer value: 8)
-        // We have to wait 8 days until they are ready to create new fishes themselves
+        // We have to wait 8 days until they are ready to create new fish themselves
         fish_timer_queue.push_back(current_fish_timer);
 
         // Remember the fishes which just created new ones
