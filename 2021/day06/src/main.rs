@@ -54,7 +54,7 @@ fn part2(fish_timers: &mut Vec<u8>) {
 
     // Iterate over each fish timer
     for fish_timers in fish_timers {
-        // Increase the number of fish timers with particular value
+        // Increase the number of fish timers with a particular value
         fish_timer_queue[*fish_timers as usize] += 1;
     }
 
@@ -63,7 +63,7 @@ fn part2(fish_timers: &mut Vec<u8>) {
         // Fishes at the front are ready to create new fishes
         let current_fish_timer = fish_timer_queue.pop_front().unwrap();
 
-        // Move the new fishes to the back (index: 8)
+        // Move the new fishes to the back (fish timer value: 8)
         // We have to wait 8 days until they are ready to create new fishes themselves
         fish_timer_queue.push_back(current_fish_timer);
 
