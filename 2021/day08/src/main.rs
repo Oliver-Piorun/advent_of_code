@@ -1,7 +1,4 @@
-use std::{
-    fs::File,
-    io::{self, BufRead, BufReader},
-};
+use std::io;
 
 fn main() -> io::Result<()> {
     // 7 segments = 'a' to 'g'
@@ -29,15 +26,15 @@ fn main() -> io::Result<()> {
     // digits with 7 segments
     // 8 => top, top left, top right, mid, bottom left, bottom right, bottom
 
-    // Open the file
-    let file = File::open("input")?;
+    // Get the input
+    let input = include_str!("../input");
 
     // Split at " | " to get the unique signal patterns (10 digits) and digital output values (4 digits)
-    let all_digits = BufReader::new(file)
+    let all_digits = input
         .lines()
         .map(|line| {
             // Replace " | " with " ", so that we can get the digits more easily
-            let sanitized_line = line.unwrap().replace(" | ", " ");
+            let sanitized_line = line.replace(" | ", " ");
 
             // Split at "," and get the digits
             let digits = sanitized_line
