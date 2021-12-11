@@ -13,13 +13,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut num_three_jolt_difference = 0;
 
     for (i, number) in numbers.iter().enumerate() {
-        let jolt_difference;
-
-        if i == 0 {
-            jolt_difference = *number;
+        let jolt_difference = if i == 0 {
+            *number
         } else {
-            jolt_difference = number - numbers[i - 1];
-        }
+            number - numbers[i - 1]
+        };
 
         if jolt_difference == 1 {
             num_one_jolt_difference += 1;

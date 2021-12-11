@@ -21,8 +21,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         let child_bags: HashMap<String, i32> = line_split[1]
             .split(", ")
-            .map(|substring| {
-                let substring = substring.replace("bags", "bag").replace(".", "");
+            .filter_map(|substring| {
+                let substring = substring.replace("bags", "bag").replace('.', "");
 
                 if substring != "no other bag" {
                     let bag_split: Vec<&str> = substring.split(' ').collect();
@@ -34,7 +34,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 None
             })
-            .flatten()
             .collect();
 
         bags.insert(bag, child_bags);
