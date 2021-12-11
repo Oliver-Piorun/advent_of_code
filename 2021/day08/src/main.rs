@@ -201,7 +201,11 @@ fn part2(all_digits: &[(Vec<Vec<char>>, Vec<Vec<char>>)]) {
     println!("part2: {total_output_value}");
 }
 
-fn get_differences(segments_a: &[char], segments_b: &[char], required_num: usize) -> Vec<char> {
+fn get_differences(
+    segments_a: &[char],
+    segments_b: &[char],
+    num_required_segments: usize,
+) -> Vec<char> {
     // Get all segments that are in a but not in b
     let differences = segments_a
         .iter()
@@ -209,7 +213,7 @@ fn get_differences(segments_a: &[char], segments_b: &[char], required_num: usize
         .map(|segment| segment.to_owned())
         .collect::<Vec<_>>();
 
-    assert_eq!(differences.len(), required_num);
+    assert_eq!(differences.len(), num_required_segments);
 
     differences
 }
