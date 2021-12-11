@@ -130,7 +130,7 @@ fn part2(all_digits: &[(Vec<Vec<char>>, Vec<Vec<char>>)]) {
         let top = get_differences(&digits[7], &digits[1], 1)[0];
 
         // Find the digit 3 by (len 5 and contains digit 1)
-        digits[3] = find_digit(unique_signal_patterns, 5, &digits[1]);
+        digits[3] = find_digit(unique_signal_patterns, &digits[1], 5);
 
         // Get the mid and bottom by (digit 3 - digit 7)
         let mid_and_bottom = get_differences(&digits[3], &digits[7], 2);
@@ -155,22 +155,22 @@ fn part2(all_digits: &[(Vec<Vec<char>>, Vec<Vec<char>>)]) {
         )[0];
 
         // Find the digit 2 by (len 5 and contains bottom left)
-        digits[2] = find_digit(unique_signal_patterns, 5, &[bottom_left]);
+        digits[2] = find_digit(unique_signal_patterns, &[bottom_left], 5);
 
         // Get the top right by (digit 2 - top - mid - bottom left - bottom)
         let top_right = get_differences(&digits[2], &[top, mid, bottom_left, bottom], 1)[0];
 
         // Find the digit 5 by (len 5 and contains top left)
-        digits[5] = find_digit(unique_signal_patterns, 5, &[top_left]);
+        digits[5] = find_digit(unique_signal_patterns, &[top_left], 5);
 
         // Find the digit 0 by (len 6 and contains top left and bottom left)
-        digits[0] = find_digit(unique_signal_patterns, 6, &[top_right, bottom_left]);
+        digits[0] = find_digit(unique_signal_patterns, &[top_right, bottom_left], 6);
 
         // Find the digit 6 by (len 6 and contains mid and bottom left)
-        digits[6] = find_digit(unique_signal_patterns, 6, &[mid, bottom_left]);
+        digits[6] = find_digit(unique_signal_patterns, &[mid, bottom_left], 6);
 
         // Find the digit 9 by (len 6 and contains top right and mid)
-        digits[9] = find_digit(unique_signal_patterns, 6, &[top_right, mid]);
+        digits[9] = find_digit(unique_signal_patterns, &[top_right, mid], 6);
 
         let digital_output_values = &digit.1;
 
@@ -232,8 +232,8 @@ fn get_single_intersection(segments_a: &[char], segments_b: &[char]) -> char {
 
 fn find_digit(
     digits: &[Vec<char>],
-    num_required_segments: usize,
     required_segments: &[char],
+    num_required_segments: usize,
 ) -> Vec<char> {
     let matches = digits
         .iter()
