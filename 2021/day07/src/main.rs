@@ -1,4 +1,3 @@
-#![feature(int_abs_diff)]
 use std::{fs, io};
 
 fn main() -> io::Result<()> {
