@@ -1,4 +1,3 @@
-#![feature(vec_retain_mut)]
 use std::{collections::HashSet, fs, io};
 
 #[derive(Default, Clone)]
