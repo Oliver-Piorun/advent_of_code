@@ -91,6 +91,6 @@ fn resolve_rules(mut rule: String, rules: &HashMap<i32, &str>) -> Vec<String> {
         // "a"
         // "b"
 
-        return vec![rule.chars().nth(1).unwrap().to_string()];
+        vec![rule.chars().nth(1).unwrap().to_string()]
     }
 }
