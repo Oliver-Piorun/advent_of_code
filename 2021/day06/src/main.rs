@@ -50,7 +50,7 @@ fn part1(fish_timers: &mut Vec<u8>) {
 fn part2(fish_timers: &mut Vec<u8>) {
     // Create a fish timer queue for fish timers with values from 0 to 8
     let mut fish_timer_queue = VecDeque::new();
-    fish_timer_queue.extend(&[0; 9]);
+    fish_timer_queue.extend([0; 9]);
 
     // Iterate over each fish timer
     for fish_timers in fish_timers {
