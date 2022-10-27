@@ -44,7 +44,7 @@ fn part1(fish_timers: &mut Vec<u8>) {
 
     let num_fish_timers = fish_timers.len();
 
-    println!("part1: {}", num_fish_timers);
+    println!("part1: {num_fish_timers}");
 }
 
 fn part2(fish_timers: &mut Vec<u8>) {
@@ -73,5 +73,5 @@ fn part2(fish_timers: &mut Vec<u8>) {
 
     let num_fish_timers = fish_timer_queue.iter().sum::<u64>();
 
-    println!("part2: {}", num_fish_timers);
+    println!("part2: {num_fish_timers}");
 }
