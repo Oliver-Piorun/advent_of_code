@@ -12,146 +12,150 @@ dependencies = [
 ]
 
 [[package]]
-name = "day01"
+name = "day01_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day01_1"
+name = "day01_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day01_2"
+name = "day01_2022"
 version = "0.1.0"
 
 [[package]]
-name = "day02"
+name = "day01_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day02_1"
+name = "day02_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day02_2"
+name = "day02_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day03"
+name = "day02_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day03_1"
+name = "day03_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day03_2"
+name = "day03_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day04"
+name = "day03_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day04_1"
+name = "day04_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day04_2"
+name = "day04_2021"
+version = "0.1.0"
+
+[[package]]
+name = "day04_2_2020"
 version = "0.1.0"
 dependencies = [
  "regex",
 ]
 
 [[package]]
-name = "day05"
+name = "day05_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day05_1"
+name = "day05_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day05_2"
+name = "day05_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day06"
+name = "day06_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day06_1"
+name = "day06_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day06_2"
+name = "day06_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day07"
+name = "day07_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day07_1"
+name = "day07_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day07_2"
+name = "day07_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day08"
+name = "day08_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day08_1"
+name = "day08_2021"
 version = "0.1.0"
 
 [[package]]
-name = "day08_2"
+name = "day08_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day09_1"
+name = "day09_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day09_2"
+name = "day09_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day10_1"
+name = "day10_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day10_2"
+name = "day10_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day11_1"
+name = "day11_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day11_2"
+name = "day11_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day12_1"
+name = "day12_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day12_2"
+name = "day12_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day13_1"
+name = "day13_1_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day13_2"
+name = "day13_2_2020"
 version = "0.1.0"
 
 [[package]]
-name = "day19_1"
+name = "day19_1_2020"
 version = "0.1.0"
 
 [[package]]
