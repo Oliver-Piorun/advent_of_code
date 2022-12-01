@@ -1,13 +1,9 @@
 #![feature(test)]
 extern crate test;
 
-use std::io;
-
-fn main() -> io::Result<()> {
+fn main() {
     part1();
     part2();
-
-    Ok(())
 }
 
 fn part1() -> i32 {
