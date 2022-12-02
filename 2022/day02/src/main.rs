@@ -61,7 +61,7 @@ fn part1() -> i32 {
             }
         };
 
-        total_score = total_score + my_shape as i32 + score;
+        total_score += my_shape as i32 + score;
     }
 
     println!("part1: {total_score}");
