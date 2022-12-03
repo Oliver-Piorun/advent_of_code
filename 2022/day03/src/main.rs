@@ -12,8 +12,8 @@ fn part1() -> i32 {
     let input = include_str!("../input");
     let mut sum_of_priorities = 0;
 
-    'outer: for line in input.lines() {
-        let (first_comp, second_comp) = line.split_at(line.len() / 2);
+    'outer: for bag in input.lines() {
+        let (first_comp, second_comp) = bag.split_at(bag.len() / 2);
 
         for i in first_comp.chars() {
             for j in second_comp.chars() {
