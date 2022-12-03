@@ -1,3 +1,4 @@
+// https://adventofcode.com/2022/day/3
 #![feature(test)]
 #![feature(iter_array_chunks)]
 extern crate test;
