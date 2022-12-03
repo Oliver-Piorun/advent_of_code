@@ -2,7 +2,6 @@
 #![feature(test)]
 #![feature(iter_array_chunks)]
 extern crate test;
-use std::collections::HashSet;
 
 fn main() {
     part1();
@@ -13,15 +12,17 @@ fn part1() -> i32 {
     let input = include_str!("../input");
     let mut sum_of_priorities = 0;
 
-    for line in input.lines() {
+    'outer: for line in input.lines() {
         let (first_comp, second_comp) = line.split_at(line.len() / 2);
 
-        'outer: for i in first_comp.chars() {
+        for i in first_comp.chars() {
             for j in second_comp.chars() {
-                if i == j {
-                    sum_of_priorities += to_priority(i);
-                    break 'outer;
+                if i != j {
+                    continue;
                 }
+
+                sum_of_priorities += to_priority(i);
+                continue 'outer;
             }
         }
     }
@@ -35,19 +36,23 @@ fn part2() -> i32 {
     let input = include_str!("../input");
     let mut sum_of_priorities = 0;
 
-    for [first_line, second_line, third_line] in input.lines().array_chunks() {
-        let first_comp_set: HashSet<char> = HashSet::from_iter(first_line.chars());
-        let second_comp_set = HashSet::from_iter(second_line.chars());
-        let third_comp_set: HashSet<char> = HashSet::from_iter(third_line.chars());
+    'outer: for [first_bag, second_bag, third_bag] in input.lines().array_chunks() {
+        for i in first_bag.chars() {
+            for j in second_bag.chars() {
+                if i != j {
+                    continue;
+                }
 
-        let first_intersection = first_comp_set.intersection(&second_comp_set);
-        let first_intersection_set =
-            HashSet::from_iter(first_intersection.map(|item_type| item_type.to_owned()));
+                for k in third_bag.chars() {
+                    if i != k {
+                        continue;
+                    }
 
-        let mut second_intersection = first_intersection_set.intersection(&third_comp_set);
-        let item_type = second_intersection.next().unwrap();
-
-        sum_of_priorities += to_priority(*item_type);
+                    sum_of_priorities += to_priority(i);
+                    continue 'outer;
+                }
+            }
+        }
     }
 
     println!("part2: {sum_of_priorities}");
