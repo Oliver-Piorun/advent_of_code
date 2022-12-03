@@ -16,12 +16,13 @@ fn part1() -> i32 {
     for line in input.lines() {
         let (first_comp, second_comp) = line.split_at(line.len() / 2);
         let first_comp_set: HashSet<char> = HashSet::from_iter(first_comp.chars());
-        let second_comp_set = HashSet::from_iter(second_comp.chars());
 
-        let mut intersection = first_comp_set.intersection(&second_comp_set);
-        let item_type = intersection.next().unwrap();
-
-        sum_of_priorities += to_priority(*item_type);
+        for item_type in second_comp.chars() {
+            if first_comp_set.contains(&item_type) {
+                sum_of_priorities += to_priority(item_type);
+                break;
+            }
+        }
     }
 
     println!("part1: {sum_of_priorities}");
