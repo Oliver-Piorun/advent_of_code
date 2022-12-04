@@ -37,7 +37,7 @@ fn part2() -> i32 {
             get_section_ids(line);
 
         if first_section_from <= second_section_to && second_section_from <= first_section_to {
-            // Sections are overlapping
+            // One section is overlapping the other
             total_overlaps += 1;
         }
     }
