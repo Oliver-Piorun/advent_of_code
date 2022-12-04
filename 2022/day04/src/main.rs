@@ -48,15 +48,18 @@ fn part2() -> i32 {
 }
 
 fn get_section_ids(str: &str) -> (i32, i32, i32, i32) {
-    let mut pairs = str.split(',');
+    let bytes = str.as_bytes();
+    let comma_index = memchr::memchr(b',', bytes).unwrap();
 
-    let mut first_section = pairs.next().unwrap().split('-');
-    let first_section_from = first_section.next().unwrap().parse::<i32>().unwrap();
-    let first_section_to = first_section.next().unwrap().parse::<i32>().unwrap();
+    let mut section = &bytes[..comma_index];
+    let mut dash_index = memchr::memchr(b'-', section).unwrap();
+    let first_section_from = atoi::atoi::<i32>(&section[..dash_index]).unwrap();
+    let first_section_to = atoi::atoi::<i32>(&section[dash_index + 1..]).unwrap();
 
-    let mut second_section = pairs.next().unwrap().split('-');
-    let second_section_from = second_section.next().unwrap().parse::<i32>().unwrap();
-    let second_section_to = second_section.next().unwrap().parse::<i32>().unwrap();
+    section = &bytes[comma_index + 1..];
+    dash_index = memchr::memchr(b'-', section).unwrap();
+    let second_section_from = atoi::atoi::<i32>(&section[..dash_index]).unwrap();
+    let second_section_to = atoi::atoi::<i32>(&section[dash_index + 1..]).unwrap();
 
     (
         first_section_from,
