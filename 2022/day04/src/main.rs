@@ -8,12 +8,15 @@ fn main() {
 }
 
 fn part1() -> i32 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut index = 0;
     let mut total_overlaps = 0;
 
-    for line in input.lines() {
-        let (first_section_from, first_section_to, second_section_from, second_section_to) =
-            get_section_ids(line);
+    while index < input.len() {
+        let first_section_from = get_section(input, &mut index, '-');
+        let first_section_to = get_section(input, &mut index, ',');
+        let second_section_from = get_section(input, &mut index, '-');
+        let second_section_to = get_section(input, &mut index, '\n');
 
         if (first_section_from <= second_section_from && first_section_to >= second_section_to)
             || (second_section_from <= first_section_from && second_section_to >= first_section_to)
@@ -29,12 +32,15 @@ fn part1() -> i32 {
 }
 
 fn part2() -> i32 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut index = 0;
     let mut total_overlaps = 0;
 
-    for line in input.lines() {
-        let (first_section_from, first_section_to, second_section_from, second_section_to) =
-            get_section_ids(line);
+    while index < input.len() {
+        let first_section_from = get_section(input, &mut index, '-');
+        let first_section_to = get_section(input, &mut index, ',');
+        let second_section_from = get_section(input, &mut index, '-');
+        let second_section_to = get_section(input, &mut index, '\n');
 
         if first_section_from <= second_section_to && second_section_from <= first_section_to {
             // One section is overlapping the other
@@ -48,26 +54,18 @@ fn part2() -> i32 {
 }
 
 #[inline(always)]
-fn get_section_ids(str: &str) -> (i32, i32, i32, i32) {
-    let bytes = str.as_bytes();
-    let comma_index = memchr::memchr(b',', bytes).unwrap();
+fn get_section(input: &[u8], index: &mut usize, delimiter: char) -> u8 {
+    let mut section = *input.get(*index).unwrap() - b'0';
+    *index += 1;
 
-    let mut section = &bytes[..comma_index];
-    let mut dash_index = memchr::memchr(b'-', section).unwrap();
-    let first_section_from = atoi::atoi::<i32>(&section[..dash_index]).unwrap();
-    let first_section_to = atoi::atoi::<i32>(&section[dash_index + 1..]).unwrap();
+    if input.get(*index).unwrap() != &(delimiter as u8) {
+        section = section * 10 + input.get(*index).unwrap() - b'0';
+        *index += 2;
+    } else {
+        *index += 1;
+    }
 
-    section = &bytes[comma_index + 1..];
-    dash_index = memchr::memchr(b'-', section).unwrap();
-    let second_section_from = atoi::atoi::<i32>(&section[..dash_index]).unwrap();
-    let second_section_to = atoi::atoi::<i32>(&section[dash_index + 1..]).unwrap();
-
-    (
-        first_section_from,
-        first_section_to,
-        second_section_from,
-        second_section_to,
-    )
+    section
 }
 
 #[cfg(test)]
