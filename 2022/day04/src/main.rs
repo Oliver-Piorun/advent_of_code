@@ -47,6 +47,7 @@ fn part2() -> i32 {
     total_overlaps
 }
 
+#[inline(always)]
 fn get_section_ids(str: &str) -> (i32, i32, i32, i32) {
     let bytes = str.as_bytes();
     let comma_index = memchr::memchr(b',', bytes).unwrap();
