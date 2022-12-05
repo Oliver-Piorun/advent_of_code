@@ -1,8 +1,8 @@
-# :christmas_tree: Advent of Code 202X :santa:
+# :christmas_tree: Advent of Code 202X :snowman:
 
 Feel free to check out my solutions! :smile:
 
-:bulb: Note: Some solutions may not be (highly) optimized or are missing due to limited time and christmas holidays :snowman:
+:bulb: Note: Some solutions may not be (highly) optimized or are missing due to limited time and christmas holidays :santa:
 
 ```
 year   day      part 1       part 2
