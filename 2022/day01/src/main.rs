@@ -10,7 +10,6 @@ fn main() {
 fn part1() -> i32 {
     let calorie_sums = get_calorie_sums();
     let max_calories = calorie_sums.iter().max().unwrap();
-    println!("part1: {max_calories}");
 
     *max_calories
 }
@@ -19,7 +18,6 @@ fn part2() -> i32 {
     let mut calorie_sums = get_calorie_sums();
     calorie_sums.sort_unstable_by(|a, b| b.cmp(a));
     let calories = calorie_sums.iter().take(3).sum::<i32>();
-    println!("part2: {calories}");
 
     calories
 }

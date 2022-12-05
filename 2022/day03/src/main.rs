@@ -27,8 +27,6 @@ fn part1() -> i32 {
         }
     }
 
-    println!("part1: {sum_of_priorities}");
-
     sum_of_priorities
 }
 
@@ -54,8 +52,6 @@ fn part2() -> i32 {
             }
         }
     }
-
-    println!("part2: {sum_of_priorities}");
 
     sum_of_priorities
 }

@@ -26,8 +26,6 @@ fn part1() -> i32 {
         }
     }
 
-    println!("part1: {total_overlaps}");
-
     total_overlaps
 }
 
@@ -47,8 +45,6 @@ fn part2() -> i32 {
             total_overlaps += 1;
         }
     }
-
-    println!("part2: {total_overlaps}");
 
     total_overlaps
 }
