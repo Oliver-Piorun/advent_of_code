@@ -17,3 +17,5 @@ year   day      part 1       part 2
 --------------------------------------
 1 μs = 0.001 ms
 ```
+
+Benchmarked on an Intel Core i5-8600k @ ~4.15 GHz (6 physical cores).
