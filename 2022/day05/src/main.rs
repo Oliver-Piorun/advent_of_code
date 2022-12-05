@@ -8,10 +8,8 @@ fn main() {
 }
 
 fn part1() -> String {
-    let input = include_bytes!("../input");
+    let (mut stacks, rearrangements) = get_stacks_and_arrangements();
     let mut crates = String::new();
-
-    let (mut stacks, rearrangements) = get_stacks_and_arrangements(input);
 
     for (num_crates, from_stack, to_stack) in rearrangements {
         for _ in 0..num_crates {
@@ -34,10 +32,8 @@ fn part1() -> String {
 }
 
 fn part2() -> String {
-    let input = include_bytes!("../input");
+    let (mut stacks, rearrangements) = get_stacks_and_arrangements();
     let mut crates = String::new();
-
-    let (mut stacks, rearrangements) = get_stacks_and_arrangements(input);
 
     for (num_crates, from_stack, to_stack) in rearrangements {
         let stack = stacks.get_mut((from_stack - 1) as usize).unwrap();
@@ -62,7 +58,8 @@ fn part2() -> String {
 
 #[allow(clippy::type_complexity)]
 #[inline(always)]
-fn get_stacks_and_arrangements(input: &[u8]) -> (Vec<Vec<char>>, Vec<(u8, u8, u8)>) {
+fn get_stacks_and_arrangements() -> (Vec<Vec<char>>, Vec<(u8, u8, u8)>) {
+    let input = include_bytes!("../input");
     let mut input_index = 0;
 
     // Stacks
