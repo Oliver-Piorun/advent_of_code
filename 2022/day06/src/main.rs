@@ -1,7 +1,5 @@
 // https://adventofcode.com/2022/day/6
 #![feature(test)]
-
-use std::collections::HashSet;
 extern crate test;
 
 fn main() {
@@ -9,30 +7,30 @@ fn main() {
     part2();
 }
 
-fn part1() -> i32 {
-    let input = include_str!("../input");
-    let chars = input.chars().collect::<Vec<char>>();
-
-    for i in 0..chars.len() {
-        let set: HashSet<&char> = HashSet::from_iter(&chars[i..i + 4]);
-
-        if set.len() == 4 {
-            return i as i32 + 4;
-        }
-    }
-
-    panic!("We should never land here!");
+fn part1() -> usize {
+    get(4)
 }
 
-fn part2() -> i32 {
-    let input = include_str!("../input");
-    let chars = input.chars().collect::<Vec<char>>();
+fn part2() -> usize {
+    get(14)
+}
 
-    for i in 0..chars.len() {
-        let set: HashSet<&char> = HashSet::from_iter(&chars[i..i + 14]);
+#[inline(always)]
+fn get(marker_length: usize) -> usize {
+    let input = include_bytes!("../input");
+    let mut stash = Vec::new();
 
-        if set.len() == 14 {
-            return i as i32 + 14;
+    for (i, c) in input.iter().enumerate() {
+        if !stash.contains(c) {
+            stash.push(input[i]);
+
+            if stash.len() == marker_length {
+                return i + 1;
+            }
+        } else {
+            let pos = stash.iter().position(|stashed_c| stashed_c == c).unwrap();
+            stash.drain(..=pos);
+            stash.push(input[i]);
         }
     }
 
