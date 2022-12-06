@@ -9,14 +9,15 @@ fn main() {
 
 fn part1() -> i32 {
     let input = include_bytes!("../input");
-    let mut index = 0;
+    let mut input_index = 0;
+
     let mut total_overlaps = 0;
 
-    while index < input.len() {
-        let first_section_from = get_section(input, &mut index, '-');
-        let first_section_to = get_section(input, &mut index, ',');
-        let second_section_from = get_section(input, &mut index, '-');
-        let second_section_to = get_section(input, &mut index, '\n');
+    while input_index < input.len() {
+        let first_section_from = get_section(input, &mut input_index, '-');
+        let first_section_to = get_section(input, &mut input_index, ',');
+        let second_section_from = get_section(input, &mut input_index, '-');
+        let second_section_to = get_section(input, &mut input_index, '\n');
 
         if (first_section_from <= second_section_from && first_section_to >= second_section_to)
             || (second_section_from <= first_section_from && second_section_to >= first_section_to)
@@ -31,14 +32,15 @@ fn part1() -> i32 {
 
 fn part2() -> i32 {
     let input = include_bytes!("../input");
-    let mut index = 0;
+    let mut input_index = 0;
+
     let mut total_overlaps = 0;
 
-    while index < input.len() {
-        let first_section_from = get_section(input, &mut index, '-');
-        let first_section_to = get_section(input, &mut index, ',');
-        let second_section_from = get_section(input, &mut index, '-');
-        let second_section_to = get_section(input, &mut index, '\n');
+    while input_index < input.len() {
+        let first_section_from = get_section(input, &mut input_index, '-');
+        let first_section_to = get_section(input, &mut input_index, ',');
+        let second_section_from = get_section(input, &mut input_index, '-');
+        let second_section_to = get_section(input, &mut input_index, '\n');
 
         if first_section_from <= second_section_to && second_section_from <= first_section_to {
             // One section is overlapping the other
