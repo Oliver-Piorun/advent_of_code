@@ -8,15 +8,15 @@ fn main() {
 }
 
 fn part1() -> usize {
-    get(4)
+    get_num_chars(4)
 }
 
 fn part2() -> usize {
-    get(14)
+    get_num_chars(14)
 }
 
 #[inline(always)]
-fn get(marker_length: usize) -> usize {
+fn get_num_chars(marker_length: usize) -> usize {
     let input = include_bytes!("../input");
     let mut stash = Vec::new();
 
