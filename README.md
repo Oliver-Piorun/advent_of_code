@@ -9,7 +9,7 @@ year    day      part 1       part 2
 ---------------------------------------
 2020         <Not benchmarked>
 2021         <Not benchmarked>
-2022    day01     39.75 μs     39.52 μs
+2022    day01      8.39 μs      9.85 μs
 2022    day02    213.26 μs    222.73 μs
 2022    day03     29.03 μs     44.77 μs
 2022    day04      9.42 μs      9.05 μs

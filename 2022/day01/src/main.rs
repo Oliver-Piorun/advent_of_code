@@ -22,17 +22,36 @@ fn part2() -> i32 {
     calories
 }
 
+#[inline(always)]
 fn get_calorie_sums() -> Vec<i32> {
-    let input = include_str!("../input");
-    input
-        .split("\n\n")
-        .map(|calorie_group| {
-            calorie_group
-                .split('\n')
-                .map(|calorie_entry| calorie_entry.parse::<i32>().unwrap())
-                .sum::<i32>()
-        })
-        .collect::<Vec<_>>()
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
+
+    let mut calorie_sums = Vec::new();
+    let mut calorie_sum = 0;
+    let mut calories = 0;
+
+    while input_index < input.len() {
+        if input[input_index] != b'\n' {
+            calories = calories * 10 + (input[input_index] - b'0') as i32;
+        } else {
+            calorie_sum += calories;
+            calories = 0;
+
+            if input[input_index + 1] == b'\n' {
+                calorie_sums.push(calorie_sum);
+                calorie_sum = 0;
+                input_index += 1;
+            }
+        }
+
+        input_index += 1;
+    }
+
+    calorie_sum += calories;
+    calorie_sums.push(calorie_sum);
+
+    calorie_sums
 }
 
 #[cfg(test)]
