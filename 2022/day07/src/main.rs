@@ -68,7 +68,7 @@ fn get_dir_size(input: &[u8], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i3
                 return dir_size;
             }
         } else if command_substr == b"$ ls" {
-            // Skip 4 bytes a potential "\n"
+            // Skip 4 bytes and a potential "\n"
             *index += 5;
         } else if command_substr == b"dir " {
             skip_past_line_end(input, index);
