@@ -11,7 +11,7 @@ fn part1() -> i32 {
     let input = include_bytes!("../input");
     let mut dir_sizes = Vec::<i32>::new();
 
-    get_dir_size_part(input, &mut 0, &mut dir_sizes);
+    get_dir_size(input, &mut 0, &mut dir_sizes);
     let total_dir_size_lte_100k = dir_sizes
         .iter()
         .filter(|&&dir_size| dir_size <= 100_000)
@@ -24,7 +24,7 @@ fn part2() -> i32 {
     let input = include_bytes!("../input");
     let mut dir_sizes = Vec::<i32>::new();
 
-    let total_dir_size = get_dir_size_part(input, &mut 0, &mut dir_sizes);
+    let total_dir_size = get_dir_size(input, &mut 0, &mut dir_sizes);
     let mut min_dir_size = i32::MAX;
 
     for dir_size in dir_sizes {
@@ -37,7 +37,7 @@ fn part2() -> i32 {
 }
 
 #[inline(always)]
-fn get_dir_size_part(input: &[u8], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i32 {
+fn get_dir_size(input: &[u8], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i32 {
     let mut dir_size = 0;
 
     while *index < input.len() {
@@ -58,7 +58,7 @@ fn get_dir_size_part(input: &[u8], index: &mut usize, dir_sizes: &mut Vec<i32>) 
                     return dir_size;
                 }
 
-                let child_dir_size = get_dir_size_part(input, index, dir_sizes);
+                let child_dir_size = get_dir_size(input, index, dir_sizes);
                 dir_size += child_dir_size;
 
                 dir_sizes.push(child_dir_size);
