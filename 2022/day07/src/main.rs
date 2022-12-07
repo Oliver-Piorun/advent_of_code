@@ -8,13 +8,10 @@ fn main() {
 }
 
 fn part1() -> i32 {
-    let lines = include_str!("../input")
-        .lines()
-        .map(|line| line.to_owned())
-        .collect::<Vec<String>>();
+    let input = include_bytes!("../input");
     let mut dir_sizes = Vec::<i32>::new();
 
-    get_dir_size_part(&lines, &mut 0, &mut dir_sizes);
+    get_dir_size_part(input, &mut 0, &mut dir_sizes);
     let total_dir_size_lte_100k = dir_sizes
         .iter()
         .filter(|&&dir_size| dir_size <= 100_000)
@@ -24,13 +21,10 @@ fn part1() -> i32 {
 }
 
 fn part2() -> i32 {
-    let lines = include_str!("../input")
-        .lines()
-        .map(|line| line.to_owned())
-        .collect::<Vec<String>>();
+    let input = include_bytes!("../input");
     let mut dir_sizes = Vec::<i32>::new();
 
-    let total_dir_size = get_dir_size_part(&lines, &mut 0, &mut dir_sizes);
+    let total_dir_size = get_dir_size_part(input, &mut 0, &mut dir_sizes);
     let mut min_dir_size = i32::MAX;
 
     for dir_size in dir_sizes {
@@ -43,33 +37,66 @@ fn part2() -> i32 {
 }
 
 #[inline(always)]
-fn get_dir_size_part(lines: &[String], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i32 {
+fn get_dir_size_part(input: &[u8], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i32 {
     let mut dir_size = 0;
 
-    while *index < lines.len() {
-        let line = lines.get(*index).unwrap();
-        *index += 1;
+    while *index < input.len() {
+        // Read 4 bytes
+        let command_substr = &input[*index..*index + 4];
 
-        if line.contains("$ cd") {
-            let dir = *line.split(' ').collect::<Vec<&str>>().get(2).unwrap();
+        if command_substr == b"$ cd" {
+            // Skip 4 bytes and " "
+            *index += 5;
 
-            if dir != ".." {
-                let child_dir_size = get_dir_size_part(lines, index, dir_sizes);
+            // Read 2 bytes
+            let dir_substr = &input[*index..*index + 2];
+
+            if dir_substr != b".." {
+                skip_past_line_end(input, index);
+
+                if *index == input.len() {
+                    return dir_size;
+                }
+
+                let child_dir_size = get_dir_size_part(input, index, dir_sizes);
                 dir_size += child_dir_size;
 
                 dir_sizes.push(child_dir_size);
             } else {
+                // Skip ".." and a potential "\n"
+                *index += 3;
                 return dir_size;
             }
-        } else if line == "$ ls" || line.contains("dir ") {
-            // Ignore
+        } else if command_substr == b"$ ls" {
+            // Skip 4 bytes a potential "\n"
+            *index += 5;
+        } else if command_substr == b"dir " {
+            skip_past_line_end(input, index);
         } else {
-            let file_size = line.split(' ').next().unwrap().parse::<i32>().unwrap();
+            let mut file_size = 0i32;
+
+            while input[*index] != b' ' {
+                file_size = file_size * 10 + (input[*index] - b'0') as i32;
+                *index += 1;
+            }
+
             dir_size += file_size;
+            skip_past_line_end(input, index);
         }
     }
 
     dir_size
+}
+
+#[inline(always)]
+fn skip_past_line_end(input: &[u8], index: &mut usize) {
+    while *index < input.len() {
+        *index += 1;
+
+        if input[*index - 1] == b'\n' {
+            break;
+        }
+    }
 }
 
 #[cfg(test)]
