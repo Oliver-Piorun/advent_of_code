@@ -12,9 +12,13 @@ fn part1() -> i32 {
         .lines()
         .map(|line| line.to_owned())
         .collect::<Vec<String>>();
-    let mut total_dir_size_lte_100k = 0;
+    let mut dir_sizes = Vec::<i32>::new();
 
-    get_dir_size_part1(&lines, &mut 0, &mut total_dir_size_lte_100k);
+    get_dir_size_part(&lines, &mut 0, &mut dir_sizes);
+    let total_dir_size_lte_100k = dir_sizes
+        .iter()
+        .filter(|&&dir_size| dir_size <= 100_000)
+        .sum();
 
     total_dir_size_lte_100k
 }
@@ -26,25 +30,20 @@ fn part2() -> i32 {
         .collect::<Vec<String>>();
     let mut dir_sizes = Vec::<i32>::new();
 
-    let total_dir_size = get_dir_size_part2(&lines, &mut 0, &mut dir_sizes);
-    let mut min_dir_size = Option::None::<i32>;
+    let total_dir_size = get_dir_size_part(&lines, &mut 0, &mut dir_sizes);
+    let mut min_dir_size = i32::MAX;
 
     for dir_size in dir_sizes {
-        if (70_000_000 - total_dir_size + dir_size) >= 30_000_000
-            && (min_dir_size.is_none() || dir_size < min_dir_size.unwrap())
-        {
-            min_dir_size = Some(dir_size);
+        if (70_000_000 - total_dir_size + dir_size) >= 30_000_000 && (dir_size < min_dir_size) {
+            min_dir_size = dir_size;
         }
     }
 
-    min_dir_size.unwrap()
+    min_dir_size
 }
 
-fn get_dir_size_part1(
-    lines: &[String],
-    index: &mut usize,
-    total_dir_size_lte_100k: &mut i32,
-) -> i32 {
+#[inline(always)]
+fn get_dir_size_part(lines: &[String], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i32 {
     let mut dir_size = 0;
 
     while *index < lines.len() {
@@ -55,38 +54,7 @@ fn get_dir_size_part1(
             let dir = *line.split(' ').collect::<Vec<&str>>().get(2).unwrap();
 
             if dir != ".." {
-                let child_dir_size = get_dir_size_part1(lines, index, total_dir_size_lte_100k);
-                dir_size += child_dir_size;
-
-                if child_dir_size <= 100_000 {
-                    *total_dir_size_lte_100k += child_dir_size;
-                }
-            } else {
-                return dir_size;
-            }
-        } else if line == "$ ls" || line.contains("dir ") {
-            // Ignore
-        } else {
-            let file_size = line.split(' ').next().unwrap().parse::<i32>().unwrap();
-            dir_size += file_size;
-        }
-    }
-
-    dir_size
-}
-
-fn get_dir_size_part2(lines: &[String], index: &mut usize, dir_sizes: &mut Vec<i32>) -> i32 {
-    let mut dir_size = 0;
-
-    while *index < lines.len() {
-        let line = lines.get(*index).unwrap();
-        *index += 1;
-
-        if line.contains("$ cd") {
-            let dir = *line.split(' ').collect::<Vec<&str>>().get(2).unwrap();
-
-            if dir != ".." {
-                let child_dir_size = get_dir_size_part2(lines, index, dir_sizes);
+                let child_dir_size = get_dir_size_part(lines, index, dir_sizes);
                 dir_size += child_dir_size;
 
                 dir_sizes.push(child_dir_size);
