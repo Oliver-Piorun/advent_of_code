@@ -24,18 +24,12 @@ fn part1() -> i32 {
             (b'A', b'Z') => 0,
             // Scissors, Rock
             (b'C', b'X') => 6,
-            _ => {
-                if op_shape > my_shape - alignment {
-                    // Lose
-                    0
-                } else if op_shape < my_shape - alignment {
-                    // Win
-                    6
-                } else {
-                    // Draw
-                    3
-                }
-            }
+            // Lose
+            _ if op_shape > my_shape - alignment => 0,
+            // Win
+            _ if op_shape < my_shape - alignment => 6,
+            // Draw
+            _ => 3,
         };
 
         // Align my_shape and 'X'
