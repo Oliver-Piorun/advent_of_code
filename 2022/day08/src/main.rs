@@ -8,28 +8,22 @@ fn main() {
 }
 
 fn part1() -> i32 {
-    let input = include_str!("../input");
-    let mut trees = Vec::<Vec<u8>>::new();
+    let input = include_bytes!("../input");
+    let width = input.iter().position(|&c| c == b'\n').unwrap();
+    let height = input.len() / width;
 
     let mut visible_tree_count = 0;
 
-    for (i, line) in input.lines().enumerate() {
-        trees.push(Vec::new());
-
-        for c in line.chars() {
-            trees.get_mut(i).unwrap().push(c as u8 - b'0');
-        }
-    }
-
-    for i in 1..trees.len() - 1 {
-        for j in 1..trees.get(i).unwrap().len() - 1 {
-            let tree = trees.get(i).unwrap().get(j).unwrap();
+    for i in 1..height - 1 {
+        for j in 1..width - 1 {
+            let tree = get_tree(input, i, j, width);
             let mut visible = true;
 
             // Top
-            for k in 0..i {
-                if trees.get(k).unwrap().get(j).unwrap() >= tree {
+            for k in (0..=i - 1).rev() {
+                if get_tree(input, k, j, width) >= tree {
                     visible = false;
+                    break;
                 }
             }
 
@@ -41,9 +35,10 @@ fn part1() -> i32 {
             visible = true;
 
             // Bottom
-            for l in i + 1..trees.len() {
-                if trees.get(l).unwrap().get(j).unwrap() >= tree {
+            for k in i + 1..height {
+                if get_tree(input, k, j, width) >= tree {
                     visible = false;
+                    break;
                 }
             }
 
@@ -55,9 +50,10 @@ fn part1() -> i32 {
             visible = true;
 
             // Left
-            for m in 0..j {
-                if trees.get(i).unwrap().get(m).unwrap() >= tree {
+            for k in (0..=j - 1).rev() {
+                if get_tree(input, i, k, width) >= tree {
                     visible = false;
+                    break;
                 }
             }
 
@@ -69,9 +65,10 @@ fn part1() -> i32 {
             visible = true;
 
             // Right
-            for n in j + 1..trees.get(i).unwrap().len() {
-                if trees.get(i).unwrap().get(n).unwrap() >= tree {
+            for k in j + 1..width {
+                if get_tree(input, i, k, width) >= tree {
                     visible = false;
+                    break;
                 }
             }
 
@@ -81,28 +78,21 @@ fn part1() -> i32 {
         }
     }
 
-    visible_tree_count += trees.len() as i32 * 2 + (trees.first().unwrap().len() as i32 - 2) * 2;
+    visible_tree_count += height as i32 * 2 + (width as i32 - 2) * 2;
 
     visible_tree_count
 }
 
 fn part2() -> i32 {
-    let input = include_str!("../input");
-    let mut trees = Vec::<Vec<u8>>::new();
+    let input = include_bytes!("../input");
+    let width = input.iter().position(|&c| c == b'\n').unwrap();
+    let height = input.len() / width;
 
     let mut max_scenic_score = 0;
 
-    for (i, line) in input.lines().enumerate() {
-        trees.push(Vec::new());
-
-        for c in line.chars() {
-            trees.get_mut(i).unwrap().push(c as u8 - b'0');
-        }
-    }
-
-    for i in 1..trees.len() - 1 {
-        for j in 1..trees.get(0).unwrap().len() - 1 {
-            let tree = trees.get(i).unwrap().get(j).unwrap();
+    for i in 1..height - 1 {
+        for j in 1..width - 1 {
+            let tree = get_tree(input, i, j, width);
             let mut top = 0;
             let mut bottom = 0;
             let mut left = 0;
@@ -112,34 +102,34 @@ fn part2() -> i32 {
             for k in (0..=i - 1).rev() {
                 top += 1;
 
-                if trees.get(k).unwrap().get(j).unwrap() >= tree {
+                if get_tree(input, k, j, width) >= tree {
                     break;
                 }
             }
 
             // Bottom
-            for l in (i + 1)..trees.len() {
+            for k in (i + 1)..height {
                 bottom += 1;
 
-                if trees.get(l).unwrap().get(j).unwrap() >= tree {
+                if get_tree(input, k, j, width) >= tree {
                     break;
                 }
             }
 
             // Left
-            for m in (0..=j - 1).rev() {
+            for k in (0..=j - 1).rev() {
                 left += 1;
 
-                if trees.get(i).unwrap().get(m).unwrap() >= tree {
+                if get_tree(input, i, k, width) >= tree {
                     break;
                 }
             }
 
             // Right
-            for n in (j + 1)..trees.get(i).unwrap().len() {
+            for k in (j + 1)..width {
                 right += 1;
 
-                if trees.get(i).unwrap().get(n).unwrap() >= tree {
+                if get_tree(input, i, k, width) >= tree {
                     break;
                 }
             }
@@ -153,6 +143,11 @@ fn part2() -> i32 {
     }
 
     max_scenic_score
+}
+
+#[inline(always)]
+fn get_tree(input: &[u8], i: usize, j: usize, width: usize) -> u8 {
+    input[i * (width + 1) + j] - b'0'
 }
 
 #[cfg(test)]
