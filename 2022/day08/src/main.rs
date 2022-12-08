@@ -2,6 +2,9 @@
 #![feature(test)]
 extern crate test;
 
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
+use std::sync::atomic::{AtomicI32, Ordering};
+
 fn main() {
     part1();
     part2();
@@ -12,9 +15,9 @@ fn part1() -> i32 {
     let width = input.iter().position(|&c| c == b'\n').unwrap();
     let height = input.len() / width;
 
-    let mut visible_tree_count = 0;
+    let mut visible_tree_count = AtomicI32::new(0);
 
-    for i in 1..height - 1 {
+    (1..height - 1).into_par_iter().for_each(|i| {
         for j in 1..width - 1 {
             let tree = get_tree(input, i, j, width);
             let mut visible = true;
@@ -28,7 +31,7 @@ fn part1() -> i32 {
             }
 
             if visible {
-                visible_tree_count += 1;
+                visible_tree_count.fetch_add(1, Ordering::SeqCst);
                 continue;
             }
 
@@ -43,7 +46,7 @@ fn part1() -> i32 {
             }
 
             if visible {
-                visible_tree_count += 1;
+                visible_tree_count.fetch_add(1, Ordering::SeqCst);
                 continue;
             }
 
@@ -58,7 +61,7 @@ fn part1() -> i32 {
             }
 
             if visible {
-                visible_tree_count += 1;
+                visible_tree_count.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
                 continue;
             }
 
@@ -73,14 +76,15 @@ fn part1() -> i32 {
             }
 
             if visible {
-                visible_tree_count += 1;
+                visible_tree_count.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
             }
         }
-    }
+    });
 
-    visible_tree_count += height as i32 * 2 + (width as i32 - 2) * 2;
+    let visible_tree_count = visible_tree_count.get_mut();
+    *visible_tree_count += height as i32 * 2 + (width as i32 - 2) * 2;
 
-    visible_tree_count
+    *visible_tree_count
 }
 
 fn part2() -> i32 {
