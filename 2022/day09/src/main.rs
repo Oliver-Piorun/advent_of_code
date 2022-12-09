@@ -1,26 +1,29 @@
 // https://adventofcode.com/2022/day/9
+#![allow(clippy::comparison_chain)]
 #![feature(test)]
+extern crate test;
 
 use std::collections::HashSet;
-extern crate test;
 
 fn main() {
     part1();
     part2();
 }
 
+#[inline(always)]
 fn part1() -> i32 {
     let input = include_str!("../input");
 
-    let mut visited = HashSet::new();
     let mut head = (0, 0);
     let mut tail = (0, 0);
-    visited.insert(tail);
+
+    let mut visited = HashSet::new();
+    visited.insert(0);
 
     for line in input.lines() {
         let mut split = line.split(' ');
         let dir = split.next().unwrap();
-        let count = split.next().unwrap().parse::<i32>().unwrap();
+        let count = split.next().unwrap().parse::<u8>().unwrap();
 
         for _ in 0..count {
             match dir {
@@ -31,7 +34,7 @@ fn part1() -> i32 {
                 _ => panic!("We should never land here!"),
             };
 
-            if i32::abs(head.0 - tail.0) == 2 || i32::abs(head.1 - tail.1) == 2 {
+            if i16::abs(head.0 - tail.0) == 2 || i16::abs(head.1 - tail.1) == 2 {
                 if head.0 < tail.0 {
                     tail.0 -= 1;
                 } else if head.0 > tail.0 {
@@ -44,7 +47,7 @@ fn part1() -> i32 {
                     tail.1 += 1;
                 }
 
-                visited.insert(tail);
+                visited.insert((tail.0 as i32) << 16 | tail.1 as i32 & 0xFFFF);
             }
         }
     }
@@ -52,17 +55,19 @@ fn part1() -> i32 {
     visited.len() as i32
 }
 
+#[inline(always)]
 fn part2() -> i32 {
     let input = include_str!("../input");
 
-    let mut visited = HashSet::new();
     let mut rope = [(0, 0); 10];
-    visited.insert(*rope.last().unwrap());
+
+    let mut visited = HashSet::new();
+    visited.insert(0);
 
     for line in input.lines() {
         let mut split = line.split(' ');
         let dir = split.next().unwrap();
-        let count = split.next().unwrap().parse::<i32>().unwrap();
+        let count = split.next().unwrap().parse::<u8>().unwrap();
 
         for _ in 0..count {
             for i in 0..rope.len() - 1 {
@@ -94,7 +99,7 @@ fn part2() -> i32 {
                     }
 
                     if i == 8 {
-                        visited.insert(*tail);
+                        visited.insert(tail.0 << 16 | tail.1 & 0xFFFF);
                     }
                 }
             }
