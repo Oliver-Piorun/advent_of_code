@@ -10,6 +10,7 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> i32 {
     let input = include_bytes!("../input");
     let width = input.iter().position(|&c| c == b'\n').unwrap();
@@ -87,6 +88,7 @@ fn part1() -> i32 {
     *visible_tree_count
 }
 
+#[inline(always)]
 fn part2() -> i32 {
     let input = include_bytes!("../input");
     let width = input.iter().position(|&c| c == b'\n').unwrap();

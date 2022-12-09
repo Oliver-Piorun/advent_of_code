@@ -8,6 +8,7 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> i32 {
     let input = include_str!("../input");
     let mut sum_of_priorities = 0;
@@ -30,6 +31,7 @@ fn part1() -> i32 {
     sum_of_priorities
 }
 
+#[inline(always)]
 fn part2() -> i32 {
     let input = include_str!("../input");
     let mut sum_of_priorities = 0;
@@ -56,8 +58,9 @@ fn part2() -> i32 {
     sum_of_priorities
 }
 
+#[inline(always)]
 fn to_priority(item_type: char) -> i32 {
-    if ('a'..='z').contains(&item_type) {
+    if item_type >= 'a' {
         // Start with a = 1
         item_type as i32 - 'a' as i32 + 1
     } else {

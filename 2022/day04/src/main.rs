@@ -7,6 +7,7 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> i32 {
     let input = include_bytes!("../input");
     let mut input_index = 0;
@@ -30,6 +31,7 @@ fn part1() -> i32 {
     total_overlaps
 }
 
+#[inline(always)]
 fn part2() -> i32 {
     let input = include_bytes!("../input");
     let mut input_index = 0;

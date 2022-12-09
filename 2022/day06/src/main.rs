@@ -7,10 +7,12 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> usize {
     get_num_chars(4)
 }
 
+#[inline(always)]
 fn part2() -> usize {
     get_num_chars(14)
 }

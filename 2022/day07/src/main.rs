@@ -7,6 +7,7 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> i32 {
     let input = include_bytes!("../input");
     let mut dir_sizes = Vec::<i32>::new();
@@ -20,6 +21,7 @@ fn part1() -> i32 {
     total_dir_size_lte_100k
 }
 
+#[inline(always)]
 fn part2() -> i32 {
     let input = include_bytes!("../input");
     let mut dir_sizes = Vec::<i32>::new();

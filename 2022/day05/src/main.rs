@@ -7,6 +7,7 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> String {
     let (mut stacks, rearrangements) = get_stacks_and_arrangements();
     let mut crates = String::new();
@@ -31,6 +32,7 @@ fn part1() -> String {
     crates
 }
 
+#[inline(always)]
 fn part2() -> String {
     let (mut stacks, rearrangements) = get_stacks_and_arrangements();
     let mut crates = String::new();

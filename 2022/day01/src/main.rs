@@ -7,6 +7,7 @@ fn main() {
     part2();
 }
 
+#[inline(always)]
 fn part1() -> i32 {
     let calorie_sums = get_calorie_sums();
     let max_calories = calorie_sums.iter().max().unwrap();
@@ -14,6 +15,7 @@ fn part1() -> i32 {
     *max_calories
 }
 
+#[inline(always)]
 fn part2() -> i32 {
     let mut calorie_sums = get_calorie_sums();
     calorie_sums.sort_unstable_by(|a, b| b.cmp(a));
