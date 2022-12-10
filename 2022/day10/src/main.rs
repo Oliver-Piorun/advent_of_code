@@ -9,20 +9,26 @@ fn main() {
 
 #[inline(always)]
 fn part1() -> i32 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut cycle = 0;
     let mut register_x = 1;
     let mut signal_strength_sums = 0;
 
-    for line in input.lines() {
-        if line == "noop" {
+    while input_index < input.len() {
+        if input[input_index] == b'n' {
+            // noop
+            // Skip "noop" or "noop\n"
+            skip_past_line_end(input, &mut input_index);
+
             cycle += 1;
 
             if cycle >= 20 && ((cycle - 20) % 40 == 0) {
                 signal_strength_sums += cycle * register_x;
             }
         } else {
+            // addx
             for i in 0..2 {
                 cycle += 1;
 
@@ -31,10 +37,7 @@ fn part1() -> i32 {
                 }
 
                 if i == 1 {
-                    let mut split = line.split(' ');
-                    split.next();
-                    let value = split.next().unwrap().parse::<i32>().unwrap();
-                    register_x += value;
+                    register_x += read_value(input, &mut input_index);
                 }
             }
         }
@@ -45,26 +48,29 @@ fn part1() -> i32 {
 
 #[inline(always)]
 fn part2() -> [[char; 40]; 6] {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut cycle = 0;
     let mut register_x = 1;
     let mut crt = [['.'; 40]; 6];
 
-    for line in input.lines() {
-        if line == "noop" {
+    while input_index < input.len() {
+        if input[input_index] == b'n' {
+            // noop
+            // Skip "noop" or "noop\n"
+            skip_past_line_end(input, &mut input_index);
+
             cycle += 1;
             update_crt(&mut crt, cycle, register_x);
         } else {
+            // addx
             for i in 0..2 {
                 cycle += 1;
                 update_crt(&mut crt, cycle, register_x);
 
                 if i == 1 {
-                    let mut split = line.split(' ');
-                    split.next();
-                    let value = split.next().unwrap().parse::<i32>().unwrap();
-                    register_x += value;
+                    register_x += read_value(input, &mut input_index);
                 }
             }
         }
@@ -81,6 +87,41 @@ fn update_crt(crt: &mut [[char; 40]; 6], cycle: i32, register_x: i32) {
     for register_x_line_index in register_x - 1..=register_x + 1 {
         if register_x_line_index == cycle_line_index {
             crt[(cycle_index / 40) as usize][(cycle_index % 40) as usize] = '#';
+        }
+    }
+}
+
+#[inline(always)]
+fn read_value(input: &[u8], index: &mut usize) -> i32 {
+    // Skip "addx "
+    *index += 5;
+
+    let mut factor = 1;
+    let mut value = 0;
+
+    while *index < input.len() && input[*index] != b'\n' {
+        if input[*index] == b'-' {
+            factor = -1;
+        } else {
+            value = value * 10 + (input[*index] - b'0') as i32;
+        }
+
+        *index += 1;
+    }
+
+    // Skip a potential "\n"
+    *index += 1;
+
+    factor * value
+}
+
+#[inline(always)]
+fn skip_past_line_end(input: &[u8], index: &mut usize) {
+    while *index < input.len() {
+        *index += 1;
+
+        if input[*index - 1] == b'\n' {
+            break;
         }
     }
 }
