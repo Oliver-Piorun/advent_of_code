@@ -87,6 +87,7 @@ fn update_crt(crt: &mut [[char; 40]; 6], cycle: i32, register_x: i32) {
     for register_x_line_index in register_x - 1..=register_x + 1 {
         if register_x_line_index == cycle_line_index {
             crt[(cycle_index / 40) as usize][(cycle_index % 40) as usize] = '#';
+            return;
         }
     }
 }
