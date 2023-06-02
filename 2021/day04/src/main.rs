@@ -127,7 +127,7 @@ fn mark_and_check_for_win(drawn_number: u8, board: &mut Board) -> bool {
 
     for y in 0..5 {
         for x in 0..5 {
-            let mut board_number = &mut board.numbers[x][y];
+            let board_number = &mut board.numbers[x][y];
 
             if board_number.number == drawn_number {
                 board_number.marked = true;
