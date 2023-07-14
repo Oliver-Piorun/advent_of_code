@@ -4,7 +4,7 @@ fn main() -> io::Result<()> {
     let input = read_to_string("input")?;
     let passports: Vec<&str> = input.split("\r\n\r\n").collect();
 
-    let required_fields = vec!["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+    let required_fields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
     let mut num_valid_passports = 0;
 
     for passport in passports {
