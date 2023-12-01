@@ -1,11 +1,8 @@
 // https://adventofcode.com/2023/day/1
 #![feature(test)]
-
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-};
 extern crate test;
+
+use std::cmp::{max, min};
 
 fn main() {
     part1();
@@ -13,29 +10,38 @@ fn main() {
 }
 
 #[inline(always)]
-fn part1() -> i32 {
-    let file = File::open("input").unwrap();
-    let lines: Vec<String> = BufReader::new(file)
-        .lines()
-        .map(|line| line.unwrap())
-        .collect();
+fn part1() -> u32 {
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut calibration_value_sum = 0;
 
-    for line in lines {
-        let mut vec = Vec::new();
-        for i in line.chars() {
-            if i.is_ascii_digit() {
-                vec.push(i);
+    loop {
+        let mut line_index = input_index;
+
+        let mut first_digit_char = -1;
+        let mut last_digit_char = 0;
+
+        while line_index < input.len() && input[line_index] != b'\n' {
+            if input[line_index] >= b'1' && input[line_index] <= b'9' {
+                if first_digit_char == -1 {
+                    first_digit_char = input[line_index] as i8;
+                }
+
+                last_digit_char = input[line_index];
             }
+
+            line_index += 1;
         }
 
-        let calibration_value = (vec.first().unwrap().to_string()
-            + &vec.last().unwrap().to_string())
-            .as_str()
-            .parse::<i32>()
-            .unwrap();
-        calibration_value_sum += calibration_value;
+        calibration_value_sum +=
+            ((first_digit_char as u8 - b'0') * 10 + last_digit_char - b'0') as u32;
+
+        if line_index == input.len() {
+            break;
+        }
+
+        input_index = line_index + 1;
     }
 
     calibration_value_sum
@@ -43,101 +49,105 @@ fn part1() -> i32 {
 
 #[inline(always)]
 fn part2() -> u32 {
-    let file = File::open("input").unwrap();
-    let lines: Vec<String> = BufReader::new(file)
-        .lines()
-        .map(|line| line.unwrap())
-        .collect();
+    const DIGITS_AS_STR: [&str; 9] = [
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    ];
+
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut calibration_value_sum = 0;
 
-    for line in lines {
-        let first_digit = get_first_digit(&line);
-        let last_digit = get_last_digit(&line);
-        let calibration_value = first_digit * 10 + last_digit;
+    loop {
+        let mut line_index = input_index;
 
-        calibration_value_sum += calibration_value as u32;
+        let mut first_digit = 0;
+        let mut last_digit = 0;
+
+        while line_index < input.len() && input[line_index] != b'\n' {
+            if input[line_index] >= b'1' && input[line_index] <= b'9' {
+                first_digit = input[line_index] - b'0';
+                break;
+            } else {
+                let to_line_index = min(line_index + 4, input.len() - 1);
+                let substring = std::str::from_utf8(&input[line_index..=to_line_index]).unwrap();
+
+                let matched_digit_as_str = DIGITS_AS_STR
+                    .iter()
+                    .filter(|&&digit_as_str| substring.starts_with(digit_as_str))
+                    .next();
+
+                if let Some(matched_digit_as_str) = matched_digit_as_str {
+                    first_digit = map_to_digit(matched_digit_as_str);
+                    break;
+                }
+            }
+
+            line_index += 1;
+        }
+
+        while line_index < input.len() && input[line_index] != b'\n' {
+            line_index += 1;
+        }
+
+        let end_index = line_index;
+
+        line_index -= 1;
+
+        while input[line_index] != b'\n' {
+            if input[line_index] >= b'1' && input[line_index] <= b'9' {
+                last_digit = input[line_index] - b'0';
+                break;
+            } else {
+                let from_line_index = max(0, line_index as isize - 4) as usize;
+                let substring = std::str::from_utf8(&input[from_line_index..=line_index]).unwrap();
+
+                let matched_digit_as_str = DIGITS_AS_STR
+                    .iter()
+                    .filter(|&&digit_as_str| substring.ends_with(digit_as_str))
+                    .next();
+
+                if let Some(matched_digit_as_str) = matched_digit_as_str {
+                    last_digit = map_to_digit(matched_digit_as_str);
+                    break;
+                }
+            }
+
+            if line_index == 0 {
+                break;
+            }
+
+            line_index -= 1;
+        }
+
+        calibration_value_sum += (first_digit * 10 + last_digit) as u32;
+
+        line_index = end_index;
+
+        if line_index == input.len() {
+            break;
+        }
+
+        input_index = line_index + 1;
     }
 
     calibration_value_sum
 }
 
-fn get_first_digit(line: &str) -> u8 {
-    let indices = [
-        line.find("one").unwrap_or(usize::MAX),
-        line.find("two").unwrap_or(usize::MAX),
-        line.find("three").unwrap_or(usize::MAX),
-        line.find("four").unwrap_or(usize::MAX),
-        line.find("five").unwrap_or(usize::MAX),
-        line.find("six").unwrap_or(usize::MAX),
-        line.find("seven").unwrap_or(usize::MAX),
-        line.find("eight").unwrap_or(usize::MAX),
-        line.find("nine").unwrap_or(usize::MAX),
-    ];
-
-    let min_index = *indices.iter().min().unwrap();
-    let mut index = usize::MAX;
-    let mut digit = 0;
-
-    if min_index != usize::MAX {
-        index = min_index;
-        digit = (indices
-            .iter()
-            .position(|index| *index == min_index)
-            .unwrap()
-            + 1) as u8;
+#[inline(always)]
+fn map_to_digit(digit_as_str: &str) -> u8 {
+    match digit_as_str {
+        "one" => 1,
+        "two" => 2,
+        "three" => 3,
+        "four" => 4,
+        "five" => 5,
+        "six" => 6,
+        "seven" => 7,
+        "eight" => 8,
+        "nine" => 9,
+        _ => panic!(),
     }
-
-    for (i, char) in line.chars().enumerate() {
-        if char.is_ascii_digit() && i <= index {
-            digit = char.to_string().parse::<u8>().unwrap();
-            break;
-        }
-    }
-
-    digit
-}
-
-fn get_last_digit(line: &str) -> u8 {
-    let indices = [
-        line.rfind("one").map(|index| index as isize).unwrap_or(-1),
-        line.rfind("two").map(|index| index as isize).unwrap_or(-1),
-        line.rfind("three")
-            .map(|index| index as isize)
-            .unwrap_or(-1),
-        line.rfind("four").map(|index| index as isize).unwrap_or(-1),
-        line.rfind("five").map(|index| index as isize).unwrap_or(-1),
-        line.rfind("six").map(|index| index as isize).unwrap_or(-1),
-        line.rfind("seven")
-            .map(|index| index as isize)
-            .unwrap_or(-1),
-        line.rfind("eight")
-            .map(|index| index as isize)
-            .unwrap_or(-1),
-        line.rfind("nine").map(|index| index as isize).unwrap_or(-1),
-    ];
-
-    let max_index = *indices.iter().max().unwrap();
-    let mut index = -1;
-    let mut digit = 0;
-
-    if max_index != -1 {
-        index = max_index;
-        digit = (indices
-            .iter()
-            .position(|index| *index == max_index)
-            .unwrap()
-            + 1) as u8;
-    }
-
-    for (i, char) in line.chars().enumerate() {
-        if char.is_ascii_digit() && i as isize >= index {
-            index = i as isize;
-            digit = char.to_string().parse::<u8>().unwrap();
-        }
-    }
-
-    digit
 }
 
 #[cfg(test)]
