@@ -74,8 +74,7 @@ fn part2() -> u32 {
 
                 let matched_digit_as_str = DIGITS_AS_STR
                     .iter()
-                    .filter(|&&digit_as_str| substring.starts_with(digit_as_str))
-                    .next();
+                    .find(|&&digit_as_str| substring.starts_with(digit_as_str));
 
                 if let Some(matched_digit_as_str) = matched_digit_as_str {
                     first_digit = map_to_digit(matched_digit_as_str);
@@ -104,8 +103,7 @@ fn part2() -> u32 {
 
                 let matched_digit_as_str = DIGITS_AS_STR
                     .iter()
-                    .filter(|&&digit_as_str| substring.ends_with(digit_as_str))
-                    .next();
+                    .find(|&&digit_as_str| substring.ends_with(digit_as_str));
 
                 if let Some(matched_digit_as_str) = matched_digit_as_str {
                     last_digit = map_to_digit(matched_digit_as_str);
