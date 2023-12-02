@@ -33,24 +33,24 @@ fn part1() -> i32 {
         let mut is_possible_game_id = true;
 
         for set in sets {
-            if let Some(caps) = red_regex.captures(set) {
-                let count = caps.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            if let Some(captures) = red_regex.captures(set) {
+                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
 
                 if count > 12 {
                     is_possible_game_id = false;
                 }
             }
 
-            if let Some(caps) = green_regex.captures(set) {
-                let count = caps.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            if let Some(captures) = green_regex.captures(set) {
+                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
 
                 if count > 13 {
                     is_possible_game_id = false;
                 }
             }
 
-            if let Some(caps) = blue_regex.captures(set) {
-                let count = caps.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            if let Some(captures) = blue_regex.captures(set) {
+                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
 
                 if count > 14 {
                     is_possible_game_id = false;
