@@ -1,8 +1,6 @@
-// https://adventofcode.com/2023/day/1
+// https://adventofcode.com/2023/day/2
 #![feature(test)]
 extern crate test;
-
-use regex::Regex;
 
 fn main() {
     part1();
@@ -10,56 +8,66 @@ fn main() {
 }
 
 #[inline(always)]
-fn part1() -> i32 {
-    let input = include_str!("../input");
+fn part1() -> u32 {
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
-    let red_regex = Regex::new(r"(\d+) red").unwrap();
-    let green_regex = Regex::new(r"(\d+) green").unwrap();
-    let blue_regex = Regex::new(r"(\d+) blue").unwrap();
+    let mut possible_game_id_sum = 0u32;
 
-    let mut possible_game_id_sum = 0;
+    'line_loop: loop {
+        // Skip "Game "
+        input_index += 5;
 
-    for line in input.lines() {
-        let mut split = line.split(": ");
-        let first = split.next().unwrap();
-        let last = split.next().unwrap();
+        let game_id = read_value(input, &mut input_index);
 
-        let mut game_split = first.split(' ');
-        game_split.next();
-        let game_id = game_split.next().unwrap().parse::<i32>().unwrap();
+        // Skip ": "
+        input_index += 2;
 
-        let sets = last.split("; ").collect::<Vec<_>>();
+        let mut is_possible_game = true;
 
-        let mut is_possible_game_id = true;
+        loop {
+            let value = read_value(input, &mut input_index);
 
-        for set in sets {
-            if let Some(captures) = red_regex.captures(set) {
-                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            // Skip " "
+            input_index += 1;
 
-                if count > 12 {
-                    is_possible_game_id = false;
-                }
+            if input[input_index] == b'r' && value > 12
+                || input[input_index] == b'g' && value > 13
+                || value > 14
+            {
+                is_possible_game = false;
             }
 
-            if let Some(captures) = green_regex.captures(set) {
-                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            // Skip "r", "g" or "b"
+            input_index += 1;
 
-                if count > 13 {
-                    is_possible_game_id = false;
+            loop {
+                if input_index != input.len() && input[input_index] != b'\n' {
+                    if is_possible_game {
+                        if input[input_index] != b',' && input[input_index] != b';' {
+                            input_index += 1;
+                        } else {
+                            // Skip ", " or "; "
+                            input_index += 2;
+                            break;
+                        }
+                    } else {
+                        input_index += 1;
+                    }
+                } else {
+                    if is_possible_game {
+                        possible_game_id_sum += game_id as u32;
+                    }
+
+                    if input_index == input.len() {
+                        break 'line_loop;
+                    } else {
+                        // Skip "\n"
+                        input_index += 1;
+                        continue 'line_loop;
+                    }
                 }
             }
-
-            if let Some(captures) = blue_regex.captures(set) {
-                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
-
-                if count > 14 {
-                    is_possible_game_id = false;
-                }
-            }
-        }
-
-        if is_possible_game_id {
-            possible_game_id_sum += game_id;
         }
     }
 
@@ -67,61 +75,93 @@ fn part1() -> i32 {
 }
 
 #[inline(always)]
-fn part2() -> i32 {
-    let input = include_str!("../input");
+fn part2() -> u32 {
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
-    let red_regex = Regex::new(r"(\d+) red").unwrap();
-    let green_regex = Regex::new(r"(\d+) green").unwrap();
-    let blue_regex = Regex::new(r"(\d+) blue").unwrap();
+    let mut power_sum = 0u32;
 
-    let mut power_sum = 0;
+    'line_loop: loop {
+        // Skip "Game "
+        input_index += 5;
 
-    for line in input.lines() {
-        let mut split = line.split(": ");
-        let first = split.next().unwrap();
-        let last = split.next().unwrap();
+        while input[input_index] != b':' {
+            input_index += 1;
+        }
 
-        let mut game_split = first.split(' ');
-        game_split.next();
+        // Skip ": "
+        input_index += 2;
 
-        let sets = last.split("; ").collect::<Vec<_>>();
+        let mut red_max = 0;
+        let mut green_max = 0;
+        let mut blue_max = 0;
 
-        let mut red_max = -1;
-        let mut green_max = -1;
-        let mut blue_max = -1;
+        loop {
+            let value = read_value(input, &mut input_index);
 
-        for set in sets {
-            if let Some(captures) = red_regex.captures(set) {
-                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            // Skip " "
+            input_index += 1;
 
-                if count > red_max {
-                    red_max = count;
+            match input[input_index] {
+                b'r' => {
+                    if value > red_max {
+                        red_max = value;
+                    }
+                }
+                b'g' => {
+                    if value > green_max {
+                        green_max = value;
+                    }
+                }
+                _ => {
+                    if value > blue_max {
+                        blue_max = value;
+                    }
                 }
             }
 
-            if let Some(captures) = green_regex.captures(set) {
-                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
+            // Skip "r", "g" or "b"
+            input_index += 1;
 
-                if count > green_max {
-                    green_max = count;
-                }
-            }
+            loop {
+                if input_index != input.len() && input[input_index] != b'\n' {
+                    if input[input_index] != b',' && input[input_index] != b';' {
+                        input_index += 1;
+                    } else {
+                        // Skip ", " or "; "
+                        input_index += 2;
+                        break;
+                    }
+                } else {
+                    power_sum += red_max as u32 * green_max as u32 * blue_max as u32;
 
-            if let Some(captures) = blue_regex.captures(set) {
-                let count = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
-
-                if count > blue_max {
-                    blue_max = count;
+                    if input_index == input.len() {
+                        break 'line_loop;
+                    } else {
+                        // Skip "\n"
+                        input_index += 1;
+                        continue 'line_loop;
+                    }
                 }
             }
         }
-
-        power_sum += red_max * green_max * blue_max;
     }
 
-    println!("{power_sum}");
-
     power_sum
+}
+
+#[inline]
+fn read_value(input: &[u8], index: &mut usize) -> u8 {
+    let mut value = 0;
+
+    while input[*index] >= b'0' && input[*index] <= b'9' {
+        value *= 10;
+        value += input[*index] - b'0';
+
+        *index += 1;
+    }
+
+    value
 }
 
 #[cfg(test)]
