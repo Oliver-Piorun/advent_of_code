@@ -2,6 +2,7 @@
 #![feature(test)]
 extern crate test;
 
+use memchr::memchr;
 use std::cmp::{max, min};
 
 fn main() {
@@ -19,23 +20,42 @@ fn part1() -> u32 {
     loop {
         let mut line_index = input_index;
 
-        let mut first_digit_char = -1;
-        let mut last_digit_char = 0;
+        let mut first_digit_char = 0;
+        let last_digit_char;
 
-        while line_index < input.len() && input[line_index] != b'\n' {
+        let line_break_index = memchr(b'\n', &input[line_index..]);
+
+        let end_index;
+
+        if let Some(line_break_index) = line_break_index {
+            end_index = line_index + line_break_index;
+        } else {
+            end_index = input.len();
+        }
+
+        while line_index < end_index {
             if input[line_index] >= b'1' && input[line_index] <= b'9' {
-                if first_digit_char == -1 {
-                    first_digit_char = input[line_index] as i8;
-                }
-
-                last_digit_char = input[line_index];
+                first_digit_char = input[line_index];
+                break;
             }
 
             line_index += 1;
         }
 
-        calibration_value_sum +=
-            ((first_digit_char as u8 - b'0') * 10 + last_digit_char - b'0') as u32;
+        line_index = end_index - 1;
+
+        loop {
+            if input[line_index] >= b'1' && input[line_index] <= b'9' {
+                last_digit_char = input[line_index];
+                break;
+            }
+
+            line_index -= 1;
+        }
+
+        calibration_value_sum += ((first_digit_char - b'0') * 10 + last_digit_char - b'0') as u32;
+
+        line_index = end_index;
 
         if line_index == input.len() {
             break;
@@ -62,9 +82,19 @@ fn part2() -> u32 {
         let mut line_index = input_index;
 
         let mut first_digit = 0;
-        let mut last_digit = 0;
+        let last_digit;
 
-        while line_index < input.len() && input[line_index] != b'\n' {
+        let line_break_index = memchr(b'\n', &input[line_index..]);
+
+        let end_index;
+
+        if let Some(line_break_index) = line_break_index {
+            end_index = line_index + line_break_index;
+        } else {
+            end_index = input.len();
+        }
+
+        while line_index < end_index {
             if input[line_index] >= b'1' && input[line_index] <= b'9' {
                 first_digit = input[line_index] - b'0';
                 break;
@@ -85,15 +115,9 @@ fn part2() -> u32 {
             line_index += 1;
         }
 
-        while line_index < input.len() && input[line_index] != b'\n' {
-            line_index += 1;
-        }
+        line_index = end_index - 1;
 
-        let end_index = line_index;
-
-        line_index -= 1;
-
-        while input[line_index] != b'\n' {
+        loop {
             if input[line_index] >= b'1' && input[line_index] <= b'9' {
                 last_digit = input[line_index] - b'0';
                 break;
@@ -109,10 +133,6 @@ fn part2() -> u32 {
                     last_digit = map_to_digit(matched_digit_as_str);
                     break;
                 }
-            }
-
-            if line_index == 0 {
-                break;
             }
 
             line_index -= 1;
