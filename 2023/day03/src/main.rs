@@ -67,7 +67,8 @@ fn part1() -> u32 {
     part_number_sum
 }
 
-fn part2() -> i32 {
+#[inline(always)]
+fn part2() -> u32 {
     let input = include_str!("../input");
     let engine_schematic = input
         .lines()
@@ -92,8 +93,8 @@ fn part2() -> i32 {
 
             if char.is_ascii_digit() {
                 // Dealing with a digit
-                first_part_number *= 10;
-                first_part_number += (char as u8 - b'0') as i32;
+                first_part_number *= 10u32;
+                first_part_number += (char as u8 - b'0') as u32;
                 visited_digits.push((i, j));
 
                 if !found_adjacent_asterisk {
@@ -165,8 +166,8 @@ fn part2() -> i32 {
 
                                     if char.is_ascii_digit() {
                                         visited_digits.push((k, m));
-                                        second_part_number *= 10;
-                                        second_part_number += (char as u8 - b'0') as i32;
+                                        second_part_number *= 10u32;
+                                        second_part_number += (char as u8 - b'0') as u32;
                                     } else {
                                         break;
                                     }
