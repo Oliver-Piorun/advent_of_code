@@ -1,8 +1,14 @@
 // https://adventofcode.com/2023/day/4
+#![feature(portable_simd)]
 #![feature(test)]
 extern crate test;
 
+#[cfg(target_arch = "x86")]
+use std::arch::x86::{__m128i, _mm_cmpeq_epi8, _mm_movemask_epi8, _mm_set1_epi8};
+#[cfg(target_arch = "x86_64")]
+use std::arch::x86_64::{__m128i, _mm_cmpeq_epi8, _mm_movemask_epi8, _mm_set1_epi8};
 use std::collections::HashMap;
+use std::simd::u8x16;
 
 fn main() {
     part1();
@@ -16,16 +22,16 @@ fn part1() -> u32 {
 
     let mut points = 0;
 
-    let mut their_card = [0u8; 10];
+    let mut their_card_simd = u8x16::default();
     let mut num_winning_numbers = 0;
 
     loop {
         // Skip "Card<whitespace><number>: "
         input_index += 10;
 
-        for their_number in &mut their_card {
+        for i in 0..10 {
             skip_potential_whitespace(input, &mut input_index);
-            *their_number = read_value(input, &mut input_index);
+            their_card_simd[i] = read_value(input, &mut input_index);
 
             // Skip " "
             input_index += 1;
@@ -39,13 +45,30 @@ fn part1() -> u32 {
             skip_potential_whitespace(input, &mut input_index);
             let our_number = read_value(input, &mut input_index);
 
-            if their_card.contains(&our_number) {
+            let their_card_simd = __m128i::from(their_card_simd);
+
+            let their_card_contains_our_number = unsafe {
+                // Set all 16 elements to "our_number"
+                let our_number_simd = _mm_set1_epi8(our_number as i8);
+
+                // Only the 80 most significant bits (10 bytes = 10 x 8 bits = 80 bits) are relevant.
+                // The comparison result of the 48 least significant bits (6 bytes = 6 x 8 bits = 48 bits) will never
+                // produce hits because those bits are all zeros and "our_number" cannot be zero
+                let comparison_result = _mm_cmpeq_epi8(their_card_simd, our_number_simd);
+
+                let mask = _mm_movemask_epi8(comparison_result);
+
+                mask > 0
+            };
+
+            if their_card_contains_our_number {
                 num_winning_numbers += 1;
             }
         }
 
         if num_winning_numbers > 0 {
             points += 2_u32.pow(num_winning_numbers - 1);
+            num_winning_numbers = 0;
         }
 
         if input_index == input.len() {
@@ -54,8 +77,6 @@ fn part1() -> u32 {
 
         // Skip "\n"
         input_index += 1;
-
-        num_winning_numbers = 0;
     }
 }
 
@@ -178,8 +199,10 @@ fn skip_potential_whitespace(input: &[u8], input_index: &mut usize) {
 fn read_value(input: &[u8], input_index: &mut usize) -> u8 {
     let mut value = 0;
 
-    while *input_index < input.len() && input[*input_index] != b' ' && input[*input_index] != b'\n'
-    {
+    // We only expect EOF, " ", "\n" or a digit
+    // "\n" -> 0x12
+    // " "  -> 0x20
+    while *input_index < input.len() && input[*input_index] > b' ' {
         value *= 10;
         value += input[*input_index] - b'0';
 
