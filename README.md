@@ -5,23 +5,25 @@ Feel free to check out my solutions! 😄
 💡 Note: Some solutions may not be optimized or are missing due to limited time and christmas holidays 🎅
 
 ```
-year    day      part 1       part 2
----------------------------------------
-2020         <Not benchmarked>
-2021         <Not benchmarked>
-2022    day01      8.90 μs      9.76 μs
-2022    day02      2.45 μs      8.90 μs
-2022    day03     32.83 μs     44.00 μs
-2022    day04      9.83 μs      9.78 μs
-2022    day05     12.39 μs     35.05 μs
-2022    day06      8.61 μs     17.07 μs
-2022    day07      5.72 μs      5.83 μs
-2022    day08     84.20 μs    270.52 μs
-2022    day09    257.82 μs    373.41 μs
-2022    day10      0.36 μs      0.91 μs
-2023    day01     20.80 μs     66.51 μs
-2023    day02      6.78 μs      7.17 μs
----------------------------------------
+year  day    part 1          part 2
+-------------------------------------------
+2020    <Not optimized/benchmarked>
+2021    <Not optimized/benchmarked>
+2022  day01         8.90 μs         9.76 μs
+2022  day02         2.45 μs         8.90 μs
+2022  day03        32.83 μs        44.00 μs
+2022  day04         9.83 μs         9.78 μs
+2022  day05        12.39 μs        35.05 μs
+2022  day06         8.61 μs        17.07 μs
+2022  day07         5.72 μs         5.83 μs
+2022  day08        84.20 μs       270.52 μs
+2022  day09       257.82 μs       373.41 μs
+2022  day10         0.36 μs         0.91 μs
+2023  day01        20.80 μs        66.51 μs
+2023  day02         6.78 μs         7.17 μs
+2023  day03  <Not opt. yet>  <Not opt. yet>
+2023  day04        36.87 μs  <Not opt. yet>
+-------------------------------------------
 1 μs = 0.001 ms
 ```
 

@@ -11,31 +11,34 @@ fn main() {
 
 #[inline(always)]
 fn part1() -> u32 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut points = 0;
 
-    for line in input.lines() {
-        let mut split = line.split(':');
-        split.next();
-        let second = split.next().unwrap().trim();
-        let mut split2 = second.split('|');
+    let mut their_card = [0u8; 10];
+    let mut num_winning_numbers = 0;
 
-        let their_card_str = split2.next().unwrap().trim().replace("  ", " ");
-        let our_numbers_str = split2.next().unwrap().trim().replace("  ", " ");
+    loop {
+        // Skip "Card<whitespace><number>: "
+        input_index += 10;
 
-        let their_card = their_card_str
-            .split(' ')
-            .map(|str| str.trim().parse::<i32>().unwrap())
-            .collect::<Vec<_>>();
-        let our_numbers = our_numbers_str
-            .split(' ')
-            .map(|str| str.trim().parse::<i32>().unwrap())
-            .collect::<Vec<_>>();
+        for their_number in &mut their_card {
+            skip_potential_whitespace(input, &mut input_index);
+            *their_number = read_value(input, &mut input_index);
 
-        let mut num_winning_numbers = 0;
+            // Skip " "
+            input_index += 1;
+        }
 
-        for our_number in our_numbers {
+        // Skip "| "
+        input_index += 2;
+
+        // Iterate over our card
+        for _ in 0..25 {
+            skip_potential_whitespace(input, &mut input_index);
+            let our_number = read_value(input, &mut input_index);
+
             if their_card.contains(&our_number) {
                 num_winning_numbers += 1;
             }
@@ -44,9 +47,16 @@ fn part1() -> u32 {
         if num_winning_numbers > 0 {
             points += 2_u32.pow(num_winning_numbers - 1);
         }
-    }
 
-    points
+        if input_index == input.len() {
+            return points;
+        }
+
+        // Skip "\n"
+        input_index += 1;
+
+        num_winning_numbers = 0;
+    }
 }
 
 #[inline(always)]
@@ -155,6 +165,28 @@ fn part2() -> u32 {
         .values()
         .map(|our_cards| our_cards.len() as u32)
         .sum()
+}
+
+#[inline(always)]
+fn skip_potential_whitespace(input: &[u8], input_index: &mut usize) {
+    while input[*input_index] == b' ' {
+        *input_index += 1;
+    }
+}
+
+#[inline(always)]
+fn read_value(input: &[u8], input_index: &mut usize) -> u8 {
+    let mut value = 0;
+
+    while *input_index < input.len() && input[*input_index] != b' ' && input[*input_index] != b'\n'
+    {
+        value *= 10;
+        value += input[*input_index] - b'0';
+
+        *input_index += 1;
+    }
+
+    value
 }
 
 #[cfg(test)]
