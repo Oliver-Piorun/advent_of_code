@@ -254,7 +254,7 @@ fn part2() -> u64 {
                 // |##############|**************|------------|
                 // ^ from         ^ mapping from ^ to         ^ mapping to
                 // - Carry the range (#) before the overlap (*) over
-                // - Carry the overlap (*) over (with the destination as an offset)
+                // - Carry the overlap (*) over (with the destination used as an offset)
                 // - Continue with the next range (because there cannot be more overlaps)
                 //
                 // 2. The mapping range is fully contained in the range.
@@ -262,7 +262,7 @@ fn part2() -> u64 {
                 // |##############|**************|############|
                 // ^ from         ^ mapping from ^ mapping to ^ to
                 // - Carry the range (#) before the overlap (*) over
-                // - Carry the overlap (*) over (with the destination as an offset)
+                // - Carry the overlap (*) over (with the destination used as an offset)
                 // - Continue with the next mapping (because there could be more overlaps)
                 //
                 // 3. The range is fully contained in the mapping range.
