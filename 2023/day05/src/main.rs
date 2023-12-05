@@ -237,7 +237,7 @@ fn part2() -> u64 {
                     continue;
                 }
 
-                // The range is before of the map range.
+                // The range is before the map range.
                 // - Carry the range (#) over
                 // - Continue with the next range
                 // |####|  |----|
