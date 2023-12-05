@@ -269,28 +269,28 @@ fn part2() -> u64 {
                 // from >= mapping_from && to <= mapping_to
                 // |--------------|**************|------------|
                 // ^ mapping from ^ from         ^ to         ^ mapping to
-                // - Carry the mapping range (-) before the overlap (*) combined with the overlap (*) over (with the mapping range before the overlap (-) added to the destination as an offset)
+                // - Carry the mapping range (-) before the overlap (*) combined with the overlap (*) over (with the mapping range (-) before the overlap (*) added to the destination and then used as an offset)
                 // - Continue with the next range (because there cannot be more overlaps)
                 //
                 // 4. The range ends after the mapping range.
                 // from >= mapping_from && to > mapping_to
                 // |--------------|**************|############|
                 // ^ mapping from ^ from         ^ mapping to ^ to
-                // - Carry the mapping range (-) before the overlap (*) combined with the overlap (*) over (with the mapping range before the overlap (-) added to the destination as an offset)
+                // - Carry the mapping range (-) before the overlap (*) combined with the overlap (*) over (with the mapping range (-) before the overlap (*) added to the destination and then used as an offset)
                 // - Continue with the next mapping (because there could be more overlaps)
                 if from < mapping_from {
                     new_ranges.push((from, mapping_from));
                     from = mapping_from;
                 }
 
-                let start = mapping_destination_from + from - mapping_from;
+                let new_from = mapping_destination_from + from - mapping_from;
 
                 if to <= mapping_to {
-                    new_ranges.push((start, mapping_destination_from + to - mapping_from));
+                    new_ranges.push((new_from, mapping_destination_from + to - mapping_from));
                     break;
                 }
 
-                new_ranges.push((start, mapping_destination_from + mapping_to - mapping_from));
+                new_ranges.push((new_from, mapping_destination_from + mapping_to - mapping_from));
 
                 // Continue with the next mapping
                 from = mapping_to;
