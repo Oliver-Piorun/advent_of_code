@@ -3,8 +3,6 @@
 #![feature(slice_group_by)]
 extern crate test;
 
-use std::cmp::Ordering;
-
 fn main() {
     part1();
     part2();
@@ -73,29 +71,31 @@ fn part1() -> u32 {
     }
 
     // Sort hands by type and then by card (ascending)
-    hands.sort_by(|hand_a, hand_b| match hand_a.2.cmp(&hand_b.2) {
-        Ordering::Less => Ordering::Less,
-        Ordering::Greater => Ordering::Greater,
-        Ordering::Equal => {
-            for (card_index, card_a) in hand_a.0.iter().enumerate() {
-                let card_b = hand_b.0.get(card_index).unwrap();
+    let mut packed_hands = hands
+        .iter()
+        .map(|hand| {
+            let mut packed_hand;
+            packed_hand = hand.1 as u64; // Bid amount
+            packed_hand |= (hand.0[4] as u64) << 16; // Fifth card
+            packed_hand |= (hand.0[3] as u64) << 24; // Fourth card
+            packed_hand |= (hand.0[2] as u64) << 32; // Third card
+            packed_hand |= (hand.0[1] as u64) << 40; // Second card
+            packed_hand |= (hand.0[0] as u64) << 48; // First card
+            packed_hand |= (hand.2 as u64) << 56; // Type
 
-                match card_a.cmp(card_b) {
-                    Ordering::Less => return Ordering::Less,
-                    Ordering::Greater => return Ordering::Equal,
-                    _ => {}
-                }
-            }
-
-            Ordering::Equal
-        }
-    });
+            packed_hand
+        })
+        .collect::<Vec<_>>();
+    packed_hands.sort();
 
     // Calculate the total winnings
-    hands
+    packed_hands
         .iter()
         .enumerate()
-        .map(|(card_index, hand)| hand.1 * (card_index as u32 + 1))
+        .map(|(hand_index, &hand)| {
+            let unpacked_bid_amount = (hand & 0xFFFF) as u32;
+            unpacked_bid_amount * (hand_index as u32 + 1)
+        })
         .sum()
 }
 
@@ -186,40 +186,42 @@ fn part2() -> u32 {
     }
 
     // Sort hands by type and then by card (ascending)
-    hands.sort_by(|hand_a, hand_b| match hand_a.2.cmp(&hand_b.2) {
-        Ordering::Less => Ordering::Less,
-        Ordering::Greater => Ordering::Greater,
-        Ordering::Equal => {
-            for (card_index, card_a) in hand_a.0.iter().enumerate() {
-                let card_b = hand_b.0.get(card_index).unwrap();
+    let mut packed_hands = hands
+        .iter()
+        .map(|hand| {
+            let mut packed_hand;
+            packed_hand = hand.1 as u64; // Bid amount
+            packed_hand |= (hand.0[4] as u64) << 16; // Fifth card
+            packed_hand |= (hand.0[3] as u64) << 24; // Fourth card
+            packed_hand |= (hand.0[2] as u64) << 32; // Third card
+            packed_hand |= (hand.0[1] as u64) << 40; // Second card
+            packed_hand |= (hand.0[0] as u64) << 48; // First card
+            packed_hand |= (hand.2 as u64) << 56; // Type
 
-                match card_a.cmp(card_b) {
-                    Ordering::Less => return Ordering::Less,
-                    Ordering::Greater => return Ordering::Equal,
-                    _ => {}
-                }
-            }
-
-            Ordering::Equal
-        }
-    });
+            packed_hand
+        })
+        .collect::<Vec<_>>();
+    packed_hands.sort();
 
     // Calculate the total winnings
-    hands
+    packed_hands
         .iter()
         .enumerate()
-        .map(|(card_index, hand)| hand.1 * (card_index as u32 + 1))
+        .map(|(hand_index, &hand)| {
+            let unpacked_bid_amount = (hand & 0xFFFF) as u32;
+            unpacked_bid_amount * (hand_index as u32 + 1)
+        })
         .sum()
 }
 
 #[inline(always)]
-fn read_value(input: &[u8], input_index: &mut usize) -> u32 {
+fn read_value(input: &[u8], input_index: &mut usize) -> u16 {
     let mut value = 0;
 
     while *input_index < input.len() && input[*input_index] != b'\n' {
-        value *= 10u32;
+        value *= 10u16;
         // The lower 4 bits of the ASCII char are matching the value it represents
-        value += (input[*input_index] & 0x0F) as u32;
+        value += (input[*input_index] & 0x0F) as u16;
 
         *input_index += 1;
     }
