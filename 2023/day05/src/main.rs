@@ -290,7 +290,10 @@ fn part2() -> u64 {
                     break;
                 }
 
-                new_ranges.push((new_from, mapping_destination_from + mapping_to - mapping_from));
+                new_ranges.push((
+                    new_from,
+                    mapping_destination_from + mapping_to - mapping_from,
+                ));
 
                 // Continue with the next mapping
                 from = mapping_to;
