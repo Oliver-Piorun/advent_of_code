@@ -1,8 +1,9 @@
 // https://adventofcode.com/2023/day/7
 #![feature(test)]
-
-use std::collections::HashMap;
+#![feature(slice_group_by)]
 extern crate test;
+
+use std::{cmp::Ordering, collections::HashMap};
 
 fn main() {
     part1();
@@ -60,89 +61,90 @@ enum Type {
 
 #[inline(always)]
 fn part1() -> u32 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
-    let mut hand_to_type_and_bid_amount = Vec::new();
+    let mut hands = Vec::new();
 
-    for line in input.lines() {
-        let mut split = line.split(' ');
-        let hand_str = split.next().unwrap();
-        let hand = hand_str
-            .chars()
-            .map(|card_ch| Card::from(card_ch))
+    loop {
+        let mut hand = [0u8; 5];
+
+        for card in &mut hand {
+            // Remap ASCII chars in a way that preserves the strengths of the camel cards while making comparing
+            // them easier
+            *card = match input[input_index] {
+                b'T' => b'A',
+                b'Q' => b'K',
+                b'K' => b'Q',
+                b'A' => b'T',
+                _ => input[input_index],
+            };
+            input_index += 1;
+        }
+
+        // Skip " "
+        input_index += 1;
+
+        let bid_amount = read_value(input, &mut input_index);
+
+        let mut sorted_hand = hand;
+        sorted_hand.sort();
+
+        let mut card_occurrences_vec = sorted_hand
+            .group_by(|card_a, card_b| card_a == card_b)
+            .map(|same_cards| same_cards.len())
             .collect::<Vec<_>>();
 
-        let bid_amount = split.next().unwrap().parse::<u32>().unwrap();
+        // Sort card occurrences (descending)
+        card_occurrences_vec.sort_by(|card_occurrences_a, card_occurrences_b| {
+            card_occurrences_b.cmp(card_occurrences_a)
+        });
 
-        if is_x_of_a_kind(&hand, 5) {
-            hand_to_type_and_bid_amount.push((hand, (Type::FiveOfAKind, bid_amount)));
-        } else if is_x_of_a_kind(&hand, 4) {
-            hand_to_type_and_bid_amount.push((hand, (Type::FourOfAKind, bid_amount)));
-        } else if is_full_house(&hand) {
-            hand_to_type_and_bid_amount.push((hand, (Type::FullHouse, bid_amount)));
-        } else if is_x_of_a_kind(&hand, 3) {
-            hand_to_type_and_bid_amount.push((hand, (Type::ThreeOfAKind, bid_amount)));
-        } else if is_two_pair(&hand) {
-            hand_to_type_and_bid_amount.push((hand, (Type::TwoPair, bid_amount)));
-        } else if is_one_pair(&hand) {
-            hand_to_type_and_bid_amount.push((hand, (Type::OnePair, bid_amount)));
-        } else {
-            hand_to_type_and_bid_amount.push((hand, (Type::HighCard, bid_amount)));
+        let r#type: u32 = match card_occurrences_vec.as_slice() {
+            [5] => 6,        // Five of a kind
+            [4, ..] => 5,    // Four of a kind
+            [3, 2] => 4,     // Full house
+            [3, ..] => 3,    // Three of a kind
+            [2, 2, ..] => 2, // Two pair
+            [2, ..] => 1,    // One pair
+            _ => 0,          // High card
+        };
+
+        hands.push((hand, bid_amount, r#type));
+
+        if input_index == input.len() {
+            break;
         }
+
+        // Skip "\n"
+        input_index += 1;
     }
 
-    // Sort by type asc
-    hand_to_type_and_bid_amount
-        .sort_by(|entry_a, entry_b| entry_a.1 .0.partial_cmp(&entry_b.1 .0).unwrap());
+    // Sort hands by type and then by card (ascending)
+    hands.sort_by(|hand_a, hand_b| match hand_a.2.cmp(&hand_b.2) {
+        Ordering::Less => Ordering::Less,
+        Ordering::Greater => Ordering::Greater,
+        Ordering::Equal => {
+            for (card_index, card_a) in hand_a.0.iter().enumerate() {
+                let card_b = hand_b.0.get(card_index).unwrap();
 
-    let mut ranked_hand_to_type_and_bid_amount = Vec::new();
-
-    // Check for hands with the same type
-    let types = vec![
-        Type::HighCard,
-        Type::OnePair,
-        Type::TwoPair,
-        Type::ThreeOfAKind,
-        Type::FullHouse,
-        Type::FourOfAKind,
-        Type::FiveOfAKind,
-    ];
-
-    for r#type in types {
-        let mut hand_to_specific_type_and_bid_amount = hand_to_type_and_bid_amount
-            .iter()
-            .filter(|entry| entry.1 .0 == r#type)
-            .map(|entry| entry.clone())
-            .collect::<Vec<_>>();
-
-        // Sort by card asc
-        hand_to_specific_type_and_bid_amount.sort_by(|entry_a, entry_b| {
-            for (card_index, card_a) in entry_a.0.iter().enumerate() {
-                let card_b = entry_b.0.get(card_index).unwrap();
-
-                if card_a < card_b {
-                    return std::cmp::Ordering::Less;
-                } else if card_a > card_b {
-                    return std::cmp::Ordering::Greater;
+                match card_a.cmp(card_b) {
+                    Ordering::Less => return Ordering::Less,
+                    Ordering::Greater => return Ordering::Equal,
+                    _ => {}
                 }
             }
 
-            std::cmp::Ordering::Equal
-        });
+            Ordering::Equal
+        }
+    });
 
-        ranked_hand_to_type_and_bid_amount.extend(hand_to_specific_type_and_bid_amount);
-    }
-
-    let mut total_winnings = 0;
-
-    for (hand_index, hand_to_type_and_bid_amount) in
-        ranked_hand_to_type_and_bid_amount.iter().enumerate()
-    {
-        let bid_amount = hand_to_type_and_bid_amount.1 .1;
-        total_winnings += bid_amount * (hand_index as u32 + 1);
-    }
-
-    total_winnings
+    // Calculate the total winnings
+    hands
+        .iter()
+        .enumerate()
+        .map(|(card_index, hand)| hand.1 * (card_index as u32 + 1))
+        .sum()
 }
 
 #[inline(always)]
@@ -284,6 +286,21 @@ fn part2() -> u32 {
     }
 
     total_winnings
+}
+
+#[inline(always)]
+fn read_value(input: &[u8], input_index: &mut usize) -> u32 {
+    let mut value = 0;
+
+    while *input_index < input.len() && input[*input_index] != b'\n' {
+        value *= 10u32;
+        // The lower 4 bits of the ASCII char are matching the value it represents
+        value += (input[*input_index] & 0x0F) as u32;
+
+        *input_index += 1;
+    }
+
+    value
 }
 
 fn generate_permutated_cards(length: usize) -> Vec<Vec<Card>> {
