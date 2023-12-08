@@ -26,6 +26,7 @@ year  day    part 1          part 2
 2023  day05         9.12 μs        15.47 μs
 2023  day06  <Not opt. yet>  <Not opt. yet>
 2023  day07       147.96 μs       250.10 μs
+2023  day08  <Not opt. yet>  <Not opt. yet>
 -------------------------------------------
 1 μs = 0.001 ms
 ```
