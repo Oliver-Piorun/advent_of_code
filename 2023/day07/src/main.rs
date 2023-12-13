@@ -1,6 +1,6 @@
 // https://adventofcode.com/2023/day/7
-#![feature(test)]
 #![feature(slice_group_by)]
+#![feature(test)]
 extern crate test;
 
 fn main() {
