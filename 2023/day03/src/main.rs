@@ -39,6 +39,7 @@ fn part1() -> u32 {
                     let l_from = max(0, j as isize - 1) as usize;
                     let l_to = min(j + 1, width - 1);
 
+                    #[allow(clippy::needless_range_loop)]
                     'outer: for k in k_from..=k_to {
                         for l in l_from..=l_to {
                             let adjacent_char = engine_schematic[k][l];
@@ -104,6 +105,7 @@ fn part2() -> u32 {
                     let l_from = max(0, j as isize - 1) as usize;
                     let l_to = min(j + 1, width - 1);
 
+                    #[allow(clippy::needless_range_loop)]
                     'outer: for k in k_from..=k_to {
                         for l in l_from..=l_to {
                             if visited_adjacent_asterisks.contains(&(k, l)) {
@@ -135,6 +137,7 @@ fn part2() -> u32 {
                     let l_from = max(0, adjacent_asterisk_l as isize - 1) as usize;
                     let l_to = min(adjacent_asterisk_l + 1, width - 1);
 
+                    #[allow(clippy::needless_range_loop)]
                     'outer: for k in k_from..=k_to {
                         for l in l_from..=l_to {
                             if visited_digits.contains(&(k, l)) {
