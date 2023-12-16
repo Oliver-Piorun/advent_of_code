@@ -115,7 +115,7 @@ fn part2() -> u64 {
                     *node = next_nodes.1.clone();
                 }
 
-                if node.ends_with("Z") {
+                if node.ends_with('Z') {
                     if !end_nodes_visited.contains_key(node) {
                         println!("Visited an end node! (end node: {node}, steps: {steps})");
                         end_nodes_visited.insert(node.clone(), steps);
