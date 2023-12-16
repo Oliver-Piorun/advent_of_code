@@ -34,6 +34,6 @@ year  day    part 1          part 2
 
 Technical details:
 
-- rustc 1.76.0-nightly (b10cfcd65 2023-11-29)
+- rustc 1.76.0-nightly (a96d57bdb 2023-12-15)
 - Intel Core i5-8600k @ ~4.15 GHz (6 physical cores)
 - Windows 10
