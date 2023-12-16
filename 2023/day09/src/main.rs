@@ -1,6 +1,9 @@
 // https://adventofcode.com/2023/day/9
+#![feature(portable_simd)]
 #![feature(test)]
 extern crate test;
+
+use std::simd::i32x32;
 
 fn main() {
     part1();
@@ -9,116 +12,118 @@ fn main() {
 
 #[inline(always)]
 fn part1() -> i32 {
-    let input = include_str!("../input");
+    get_extrapolated_value_sum(|sequence, sequence_length, extrapolated_value| {
+        *extrapolated_value += sequence[*sequence_length - 1];
+        *sequence_length += 1;
+    })
+}
+
+#[inline(always)]
+fn part2() -> i32 {
+    get_extrapolated_value_sum(|sequence, _, extrapolated_value| {
+        *extrapolated_value = sequence[0] - *extrapolated_value
+    })
+}
+
+#[inline(always)]
+fn get_extrapolated_value_sum<F>(calculate_extrapolated_value_fn: F) -> i32
+where
+    F: Fn(
+        &[i32; 32], // sequence
+        &mut usize, // sequence_length
+        &mut i32,   // extrapolated_value
+    ),
+{
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut extrapolated_value_sum = 0;
 
-    for line in input.lines() {
-        let values = line
-            .split(' ')
-            .map(|value_as_str| value_as_str.parse::<i32>().unwrap())
-            .collect::<Vec<_>>();
-        let mut sequences = vec![values];
-
-        let mut sequence_index = 0;
+    loop {
+        let mut values = [0; 32];
+        let mut value_index = 0;
 
         loop {
-            let mut new_sequence = Vec::new();
-            let mut all_zeros = true;
+            let value = read_value(input, &mut input_index);
+            values[value_index] = value;
+            value_index += 1;
 
-            let sequence = sequences.get(sequence_index).unwrap();
-
-            for (value_index, value) in sequence.iter().enumerate() {
-                if value_index == sequence.len() - 1 {
-                    break;
-                }
-
-                let difference = sequence.get(value_index + 1).unwrap() - value;
-
-                if difference != 0 {
-                    all_zeros = false;
-                }
-
-                new_sequence.push(difference);
-            }
-
-            sequences.push(new_sequence);
-
-            if all_zeros {
+            if input_index == input.len() || input[input_index] == b'\n' {
                 break;
             }
 
+            // Skip " "
+            input_index += 1;
+        }
+
+        let mut sequence_length = value_index;
+        let mut sequences = vec![values];
+        let mut sequence_index = 0;
+
+        loop {
+            let sequence = &sequences[sequence_index];
+
+            // Rotate left to be able to subtract properly. We do not care about substraction results which are at
+            // indices >= sequence_length. Those are not taken into account when checking for zeros or when calculating
+            // the extrapolated values
+            let minuend = i32x32::from_slice(sequence).rotate_lanes_left::<1>();
+            let subtrahend = i32x32::from_slice(sequence);
+            let difference = minuend - subtrahend;
+
+            let new_sequence = difference.as_array();
+
+            if new_sequence[0..sequence_length - 1]
+                .iter()
+                .all(|&value| value == 0)
+            {
+                break;
+            }
+
+            sequence_length -= 1;
+            sequences.push(*new_sequence);
             sequence_index += 1;
         }
 
         let mut extrapolated_value = 0;
 
-        for sequence in sequences.iter().rev().skip(1) {
-            let last_value = sequence.last().unwrap();
-            extrapolated_value += last_value;
+        for sequence in sequences.iter().rev() {
+            calculate_extrapolated_value_fn(
+                sequence,
+                &mut sequence_length,
+                &mut extrapolated_value,
+            );
         }
 
         extrapolated_value_sum += extrapolated_value;
+
+        if input_index == input.len() {
+            break;
+        }
+
+        // Skip "\n"
+        input_index += 1;
     }
 
     extrapolated_value_sum
 }
 
 #[inline(always)]
-fn part2() -> i32 {
-    let input = include_str!("../input");
+fn read_value(input: &[u8], input_index: &mut usize) -> i32 {
+    let mut factor = 1;
+    let mut value = 0;
 
-    let mut extrapolated_value_sum = 0;
-
-    for line in input.lines() {
-        let values = line
-            .split(' ')
-            .map(|value_as_str| value_as_str.parse::<i32>().unwrap())
-            .collect::<Vec<_>>();
-        let mut sequences = vec![values];
-
-        let mut sequence_index = 0;
-
-        loop {
-            let mut new_sequence = Vec::new();
-            let mut all_zeros = true;
-
-            let sequence = sequences.get(sequence_index).unwrap();
-
-            for (value_index, value) in sequence.iter().enumerate() {
-                if value_index == sequence.len() - 1 {
-                    break;
-                }
-
-                let diff = sequence.get(value_index + 1).unwrap() - value;
-
-                if diff != 0 {
-                    all_zeros = false;
-                }
-
-                new_sequence.push(diff);
-            }
-
-            sequences.push(new_sequence);
-
-            if all_zeros {
-                break;
-            }
-
-            sequence_index += 1;
+    while *input_index < input.len() && input[*input_index] != b' ' && input[*input_index] != b'\n'
+    {
+        if input[*input_index] == b'-' {
+            factor = -1;
+        } else {
+            value = value * 10 + (input[*input_index] & 0xF) as i32;
         }
 
-        let mut extrapolated_value = 0;
-
-        for sequence in sequences.iter().rev().skip(1) {
-            let first_value = sequence.first().unwrap();
-            extrapolated_value = first_value - extrapolated_value;
-        }
-
-        extrapolated_value_sum += extrapolated_value;
+        *input_index += 1;
     }
 
-    extrapolated_value_sum
+    factor * value
 }
 
 #[cfg(test)]
