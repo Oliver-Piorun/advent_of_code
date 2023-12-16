@@ -66,7 +66,7 @@ where
             // Rotate left to be able to subtract properly. We do not care about substraction results which are at
             // indices >= sequence_length. Those are not taken into account when checking for zeros or when calculating
             // the extrapolated values
-            let minuend = i32x32::from_slice(sequence).rotate_lanes_left::<1>();
+            let minuend = i32x32::from_slice(sequence).rotate_elements_left::<1>();
             let subtrahend = i32x32::from_slice(sequence);
             let difference = minuend - subtrahend;
 
