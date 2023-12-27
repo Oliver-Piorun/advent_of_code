@@ -2,7 +2,10 @@
 #![feature(test)]
 extern crate test;
 
-use std::collections::HashMap;
+use std::collections::{
+    hash_map::Entry::{Occupied, Vacant},
+    HashMap,
+};
 
 fn main() {
     part1();
@@ -11,51 +14,63 @@ fn main() {
 
 #[inline(always)]
 fn part1() -> u32 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut instructions = Vec::new();
-    let mut node_mappings = HashMap::new();
 
-    for (line_index, line) in input.lines().enumerate() {
-        if line_index == 0 {
-            instructions = line.chars().collect::<Vec<_>>();
-            continue;
-        }
-
-        if line_index == 1 {
-            continue;
-        }
-
-        let mut split = line.split(" = ");
-        let from_node = split.next().unwrap();
-        let to_nodes = split.next().unwrap().replace(['(', ')'], "");
-
-        let mut split2 = to_nodes.split(", ");
-        let to_left_node = split2.next().unwrap();
-        let to_right_node = split2.next().unwrap();
-
-        node_mappings.insert(
-            from_node.to_string(),
-            (to_left_node.to_string(), to_right_node.to_string()),
-        );
+    while input[input_index] != b'\n' {
+        instructions.push(input[input_index]);
+        input_index += 1;
     }
 
-    let mut node = "AAA".to_string();
+    // Skip "\n\n"
+    input_index += 2;
+
+    // get_index(b"ZZZ") == 25 * 26^2 + 25 * 26 + 25 = 17575
+    let mut node_mappings = [(0u16, 0u16); 25 * 26 * 26 + 25 * 26 + 25 + 1];
+
+    loop {
+        let from_node_index = get_combined_index(&input[input_index..input_index + 3]);
+
+        // Skip "XXX = ("
+        input_index += 7;
+
+        let to_left_node_index = get_combined_index(&input[input_index..input_index + 3]);
+
+        // Skip "XXX, "
+        input_index += 5;
+
+        let to_right_node_index = get_combined_index(&input[input_index..input_index + 3]);
+
+        node_mappings[from_node_index] = (to_left_node_index as u16, to_right_node_index as u16);
+
+        // Skip "XXX)" and a potential "\n"
+        input_index += 5;
+
+        if input_index >= input.len() {
+            break;
+        }
+    }
+
+    let mut node_index = get_combined_index(b"AAA");
+    let end_node_index = get_combined_index(b"ZZZ");
+
     let mut steps = 0;
 
     'outer: loop {
         for &instruction in &instructions {
-            let next_nodes = node_mappings.get(&node).unwrap();
+            let next_node_indices = node_mappings[node_index];
 
-            if instruction == 'L' {
-                node = next_nodes.0.clone();
+            if instruction == b'L' {
+                node_index = next_node_indices.0 as usize;
             } else {
-                node = next_nodes.1.clone();
+                node_index = next_node_indices.1 as usize;
             }
 
             steps += 1;
 
-            if node == "ZZZ" {
+            if node_index == end_node_index {
                 break 'outer;
             }
         }
@@ -66,66 +81,77 @@ fn part1() -> u32 {
 
 #[inline(always)]
 fn part2() -> u64 {
-    let input = include_str!("../input");
+    let input = include_bytes!("../input");
+    let mut input_index = 0;
 
     let mut instructions = Vec::new();
-    let mut nodes = Vec::new();
-    let mut node_mappings = HashMap::new();
 
-    for (line_index, line) in input.lines().enumerate() {
-        if line_index == 0 {
-            instructions = line.chars().collect::<Vec<_>>();
-            continue;
+    while input[input_index] != b'\n' {
+        instructions.push(input[input_index]);
+        input_index += 1;
+    }
+
+    // Skip "\n\n"
+    input_index += 2;
+
+    // get_index(b"ZZZ") == 25 * 26^2 + 25 * 26 + 25 = 17575
+    let mut node_mappings = [(0u16, 0u16); 25 * 26 * 26 + 25 * 26 + 25 + 1];
+    let mut node_indices = Vec::new();
+
+    loop {
+        let from_node_index = get_combined_index(&input[input_index..input_index + 3]);
+
+        if input[input_index + 2] == b'A' {
+            node_indices.push(from_node_index);
         }
 
-        if line_index == 1 {
-            continue;
+        // Skip "XXX = ("
+        input_index += 7;
+
+        let to_left_node_index = get_combined_index(&input[input_index..input_index + 3]);
+
+        // Skip "XXX, "
+        input_index += 5;
+
+        let to_right_node_index = get_combined_index(&input[input_index..input_index + 3]);
+
+        node_mappings[from_node_index] = (to_left_node_index as u16, to_right_node_index as u16);
+
+        // Skip "XXX)" and a potential "\n"
+        input_index += 5;
+
+        if input_index >= input.len() {
+            break;
         }
-
-        let mut split = line.split(" = ");
-        let from_node = split.next().unwrap();
-        let to_nodes = split.next().unwrap().replace(['(', ')'], "");
-
-        let mut split2 = to_nodes.split(", ");
-        let to_left_node = split2.next().unwrap();
-        let to_right_node = split2.next().unwrap();
-
-        if from_node.ends_with('A') {
-            nodes.push(from_node.to_string());
-        }
-
-        node_mappings.insert(
-            from_node.to_string(),
-            (to_left_node.to_string(), to_right_node.to_string()),
-        );
     }
 
     let mut end_nodes_visited = HashMap::new();
     let mut end_node_cycles = HashMap::new();
     let mut steps = 0u64;
 
-    while end_node_cycles.len() < nodes.len() {
+    while end_node_cycles.len() < node_indices.len() {
         for &instruction in &instructions {
-            for node in nodes.iter_mut() {
-                let next_nodes: &(String, String) = node_mappings.get(&node.to_owned()).unwrap();
+            for node_index in node_indices.iter_mut() {
+                let next_node_indices = node_mappings[*node_index];
 
-                if instruction == 'L' {
-                    *node = next_nodes.0.clone();
+                if instruction == b'L' {
+                    *node_index = next_node_indices.0 as usize;
                 } else {
-                    *node = next_nodes.1.clone();
+                    *node_index = next_node_indices.1 as usize;
                 }
 
-                if node.ends_with('Z') {
-                    if !end_nodes_visited.contains_key(node) {
-                        println!("Visited an end node! (end node: {node}, steps: {steps})");
-                        end_nodes_visited.insert(node.clone(), steps);
-                    } else if !end_node_cycles.contains_key(node) {
-                        println!(
-                            "Found an end node cycle! (end node: {node}, {steps} - {} = {})",
-                            end_nodes_visited[node],
-                            steps - end_nodes_visited[node]
-                        );
-                        end_node_cycles.insert(node.clone(), steps - end_nodes_visited[node]);
+                if get_last_letter(*node_index) != 'Z' {
+                    continue;
+                }
+
+                match end_nodes_visited.entry(*node_index) {
+                    Occupied(occupied_entry) => {
+                        if let Vacant(vacant_entry) = end_node_cycles.entry(*node_index) {
+                            vacant_entry.insert(steps - occupied_entry.get());
+                        }
+                    }
+                    Vacant(vacant_entry) => {
+                        vacant_entry.insert(steps);
                     }
                 }
             }
@@ -142,6 +168,19 @@ fn part2() -> u64 {
         .unwrap()
 }
 
+#[inline(always)]
+fn get_combined_index(slice: &[u8]) -> usize {
+    // We are shifting the letters so that the resulting combined index does not get too big
+    (slice[0] - b'A') as usize * 26 * 26
+        + (slice[1] - b'A') as usize * 26
+        + (slice[2] - b'A') as usize
+}
+
+#[inline(always)]
+fn get_last_letter(combined_index: usize) -> char {
+    ((combined_index % 26) as u8 + b'A') as char
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -155,6 +194,20 @@ mod tests {
     #[test]
     fn test_part2() {
         assert_eq!(part2(), 12833235391111);
+    }
+
+    #[test]
+    fn test_get_combined_index() {
+        assert_eq!(get_combined_index(b"AAA"), 0);
+        assert_eq!(get_combined_index(b"WTS"), 15384);
+        assert_eq!(get_combined_index(b"ZZZ"), 17575);
+    }
+
+    #[test]
+    fn test_get_last_letter() {
+        assert_eq!(get_last_letter(get_combined_index(b"AAA")), 'A');
+        assert_eq!(get_last_letter(get_combined_index(b"WTS")), 'S');
+        assert_eq!(get_last_letter(get_combined_index(b"ZZZ")), 'Z');
     }
 
     #[bench]
