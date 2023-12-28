@@ -51,8 +51,8 @@ fn part1() -> u32 {
                 // Set all 16 elements to "our_number"
                 let our_number = _mm_set1_epi8(our_number as i8);
 
-                // Only the 80 most significant bits (10 bytes = 10 x 8 bits = 80 bits) are relevant.
-                // The comparison result of the 48 least significant bits (6 bytes = 6 x 8 bits = 48 bits) will never
+                // Only the 80 most significant bits (10 bytes = 10 * 8 bits = 80 bits) are relevant.
+                // The comparison result of the 48 least significant bits (6 bytes = 6 * 8 bits = 48 bits) will never
                 // produce hits because those bits are all zeros and "our_number" cannot be zero
                 let comparison_result = _mm_cmpeq_epi8(their_card, our_number);
 
@@ -121,8 +121,8 @@ fn part2() -> u32 {
                 // Set all 16 elements to "our_number"
                 let our_number = _mm_set1_epi8(our_number as i8);
 
-                // Only the 80 most significant bits (10 bytes = 10 x 8 bits = 80 bits) are relevant.
-                // The comparison result of the 48 least significant bits (6 bytes = 6 x 8 bits = 48 bits) will never
+                // Only the 80 most significant bits (10 bytes = 10 * 8 bits = 80 bits) are relevant.
+                // The comparison result of the 48 least significant bits (6 bytes = 6 * 8 bits = 48 bits) will never
                 // produce hits because those bits are all zeros and "our_number" cannot be zero
                 let comparison_result = _mm_cmpeq_epi8(their_card, our_number);
 
