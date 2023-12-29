@@ -21,7 +21,7 @@ year  day    part 1          part 2
 2022  day10         0.36 μs         0.91 μs
 2023  day01        20.80 μs        66.51 μs
 2023  day02         6.78 μs         7.17 μs
-2023  day03  <Not opt. yet>  <Not opt. yet>
+2023  day03        53.64 μs        45.80 μs
 2023  day04        25.84 μs        26.52 μs
 2023  day05         9.12 μs        15.47 μs
 2023  day06         0.17 μs         0.04 μs

@@ -11,40 +11,39 @@ fn main() {
 
 #[inline(always)]
 fn part1() -> u32 {
-    let input = include_str!("../input");
-    let engine_schematic = input
-        .lines()
-        .map(|line| line.chars().collect::<Vec<_>>())
-        .collect::<Vec<_>>();
-    let height = engine_schematic.len();
-    let width = engine_schematic.first().unwrap().len();
+    let input = include_bytes!("../input");
+
+    let width = input
+        .iter()
+        .position(|&character| character == b'\n')
+        .unwrap();
+    let height = input.len() / (width + 1) + 1;
 
     let mut part_number_sum = 0;
     let mut part_number = 0;
     let mut found_adjacent_symbol = false;
 
-    for i in 0..height {
-        for j in 0..width {
-            let char = engine_schematic[i][j];
+    for y in 0..height {
+        for x in 0..width {
+            let character = get_character(y, x, input, width);
 
-            if char.is_ascii_digit() {
+            if character.is_ascii_digit() {
                 // Dealing with a digit
-                part_number *= 10u32;
-                part_number += (char as u8 - b'0') as u32;
+                part_number = part_number * 10 + (character & 0xF) as u32;
 
                 if !found_adjacent_symbol {
                     // Search for a symbol which is adjacent to the current part number digit
-                    let k_from = max(0, i as isize - 1) as usize;
-                    let k_to = min(i + 1, height - 1);
-                    let l_from = max(0, j as isize - 1) as usize;
-                    let l_to = min(j + 1, width - 1);
+                    let i_from = max(0, y as isize - 1) as usize;
+                    let i_to = min(y + 1, height - 1);
+                    let j_from = max(0, x as isize - 1) as usize;
+                    let j_to = min(x + 1, width - 1);
 
                     #[allow(clippy::needless_range_loop)]
-                    'outer: for k in k_from..=k_to {
-                        for l in l_from..=l_to {
-                            let adjacent_char = engine_schematic[k][l];
+                    'outer: for k in i_from..=i_to {
+                        for l in j_from..=j_to {
+                            let adjacent_character = get_character(k, l, input, width);
 
-                            if !adjacent_char.is_ascii_digit() && adjacent_char != '.' {
+                            if adjacent_character != b'.' && !adjacent_character.is_ascii_digit() {
                                 found_adjacent_symbol = true;
                                 break 'outer;
                             }
@@ -53,7 +52,7 @@ fn part1() -> u32 {
                 }
             }
 
-            if !char.is_ascii_digit() || j == width - 1 {
+            if !character.is_ascii_digit() || x == width - 1 {
                 // Not dealing with a digit or we are at the end of a row
                 if found_adjacent_symbol {
                     part_number_sum += part_number;
@@ -70,132 +69,108 @@ fn part1() -> u32 {
 
 #[inline(always)]
 fn part2() -> u32 {
-    let input = include_str!("../input");
-    let engine_schematic = input
-        .lines()
-        .map(|line| line.chars().collect::<Vec<_>>())
-        .collect::<Vec<_>>();
-    let height = engine_schematic.len();
-    let width = engine_schematic.first().unwrap().len();
+    let input = include_bytes!("../input");
+
+    let width = input
+        .iter()
+        .position(|&character| character == b'\n')
+        .unwrap();
+    let height = input.len() / (width + 1) + 1;
 
     let mut gear_ratio_sum = 0;
 
-    let mut first_part_number = 0;
-    let mut second_part_number = 0;
-    let mut visited_digits = Vec::new();
-    let mut found_adjacent_asterisk = false;
-    let mut adjacent_asterisk_k = 0;
-    let mut adjacent_asterisk_l = 0;
-    let mut visited_adjacent_asterisks = Vec::new();
+    for y in 0..height {
+        for x in 0..width {
+            let character = get_character(y, x, input, width);
 
-    for i in 0..height {
-        for j in 0..width {
-            let char = engine_schematic[i][j];
+            if character == b'*' {
+                let mut part_numbers = Vec::new();
 
-            if char.is_ascii_digit() {
-                // Dealing with a digit
-                first_part_number *= 10u32;
-                first_part_number += (char as u8 - b'0') as u32;
-                visited_digits.push((i, j));
-
-                if !found_adjacent_asterisk {
-                    // Search for "*" which is adjacent to the current part number digit
-                    let k_from = max(0, i as isize - 1) as usize;
-                    let k_to = min(i + 1, height - 1);
-                    let l_from = max(0, j as isize - 1) as usize;
-                    let l_to = min(j + 1, width - 1);
-
-                    #[allow(clippy::needless_range_loop)]
-                    'outer: for k in k_from..=k_to {
-                        for l in l_from..=l_to {
-                            if visited_adjacent_asterisks.contains(&(k, l)) {
-                                continue;
-                            }
-
-                            let adjacent_char = engine_schematic[k][l];
-
-                            if adjacent_char == '*' {
-                                found_adjacent_asterisk = true;
-                                adjacent_asterisk_k = k;
-                                adjacent_asterisk_l = l;
-                                visited_adjacent_asterisks.push((k, l));
-                                break 'outer;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if !char.is_ascii_digit() || j == width - 1 {
-                // Not dealing with a digit or we are at the end of a row
-                if found_adjacent_asterisk {
-                    let mut found_exactly_one_second_part_number = false;
-
-                    // Search for an unvisited digit which is adjacent to the found "*"
-                    let k_from = max(0, adjacent_asterisk_k as isize - 1) as usize;
-                    let k_to = min(adjacent_asterisk_k + 1, height - 1);
-                    let l_from = max(0, adjacent_asterisk_l as isize - 1) as usize;
-                    let l_to = min(adjacent_asterisk_l + 1, width - 1);
-
-                    #[allow(clippy::needless_range_loop)]
-                    'outer: for k in k_from..=k_to {
-                        for l in l_from..=l_to {
-                            if visited_digits.contains(&(k, l)) {
-                                continue;
-                            }
-
-                            let adjacent_char = engine_schematic[k][l];
-
-                            if adjacent_char.is_ascii_digit() {
-                                if found_exactly_one_second_part_number {
-                                    found_exactly_one_second_part_number = false;
-                                    break 'outer;
-                                }
-
-                                found_exactly_one_second_part_number = true;
-
-                                let mut char_m_from = l as isize;
-
-                                while char_m_from != -1
-                                    && engine_schematic[k][char_m_from as usize].is_ascii_digit()
-                                {
-                                    char_m_from -= 1;
-                                }
-
-                                char_m_from += 1;
-
-                                for m in char_m_from as usize..width {
-                                    let char = engine_schematic[k][m];
-
-                                    if char.is_ascii_digit() {
-                                        visited_digits.push((k, m));
-                                        second_part_number *= 10u32;
-                                        second_part_number += (char as u8 - b'0') as u32;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if found_exactly_one_second_part_number {
-                        gear_ratio_sum += first_part_number * second_part_number;
-                    }
-
-                    second_part_number = 0;
-                    found_adjacent_asterisk = false;
-                    adjacent_asterisk_k = 0;
-                    adjacent_asterisk_l = 0;
+                if y != 0 {
+                    // Take a look at the row above
+                    get_part_numbers(y - 1, x, &mut part_numbers, input, width);
                 }
 
-                first_part_number = 0;
-                visited_digits.clear();
+                // Take a look at the current row
+                get_part_numbers(y, x, &mut part_numbers, input, width);
+
+                if y != height - 1 {
+                    // Take a look at the row below
+                    get_part_numbers(y + 1, x, &mut part_numbers, input, width);
+                }
+
+                if part_numbers.len() == 2 {
+                    gear_ratio_sum += part_numbers[0] as u32 * part_numbers[1] as u32;
+                }
             }
         }
     }
 
     gear_ratio_sum
+}
+
+#[inline(always)]
+fn get_character(y: usize, x: usize, input: &[u8], width: usize) -> u8 {
+    input[y * (width + 1) + x]
+}
+
+#[inline(always)]
+fn get_part_numbers(y: usize, x: usize, part_numbers: &mut Vec<u16>, input: &[u8], width: usize) {
+    let mut current_x = x as isize;
+    let mut found_digits = false;
+
+    // Try to follow left characters which are digits
+    loop {
+        current_x -= 1;
+
+        if current_x < 0 || !get_character(y, current_x as usize, input, width).is_ascii_digit() {
+            break;
+        }
+
+        found_digits = true;
+    }
+
+    current_x += 1;
+
+    if found_digits {
+        // Left characters are digits
+        part_numbers.push(read_value(y, &mut current_x, input, width));
+    }
+
+    // We are at the middle character
+    if (current_x as usize) == x {
+        if get_character(y, current_x as usize, input, width).is_ascii_digit() {
+            // Middle character is a digit
+            part_numbers.push(read_value(y, &mut current_x, input, width))
+        } else if get_character(y, (current_x + 1) as usize, input, width).is_ascii_digit() {
+            // Middle character is not a digit but the right character is
+            current_x += 1;
+            part_numbers.push(read_value(y, &mut current_x, input, width));
+        }
+    }
+}
+
+#[inline(always)]
+fn read_value(y: usize, x: &mut isize, input: &[u8], width: usize) -> u16 {
+    let mut value = 0;
+
+    loop {
+        if *x as usize == width {
+            break;
+        }
+
+        let character = get_character(y, *x as usize, input, width);
+
+        if !character.is_ascii_digit() {
+            break;
+        }
+
+        value = value * 10 + (character & 0xF) as u16;
+
+        *x += 1;
+    }
+
+    value
 }
 
 #[cfg(test)]
