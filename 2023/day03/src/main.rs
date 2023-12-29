@@ -137,8 +137,8 @@ fn get_part_numbers(y: usize, x: usize, part_numbers: &mut Vec<u16>, input: &[u8
         part_numbers.push(read_value(y, &mut current_x, input, width));
     }
 
-    // We are at the middle character
     if (current_x as usize) == x {
+        // We are at the middle character
         if get_character(y, current_x as usize, input, width).is_ascii_digit() {
             // Middle character is a digit
             part_numbers.push(read_value(y, &mut current_x, input, width))
