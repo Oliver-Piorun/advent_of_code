@@ -1,5 +1,4 @@
 // https://adventofcode.com/2023/day/7
-#![feature(slice_group_by)]
 #![feature(test)]
 extern crate test;
 
@@ -41,7 +40,7 @@ fn part1() -> u32 {
         sorted_hand.sort();
 
         let mut card_occurrences_vec = sorted_hand
-            .group_by(|card_a, card_b| card_a == card_b)
+            .chunk_by(|card_a, card_b| card_a == card_b)
             .map(|same_cards| same_cards.len())
             .collect::<Vec<_>>();
 
@@ -148,7 +147,7 @@ fn part2() -> u32 {
                 false
             })
             .collect::<Vec<_>>()
-            .group_by(|card_a, card_b| card_a == card_b)
+            .chunk_by(|card_a, card_b| card_a == card_b)
             .map(|same_cards| same_cards.len())
             .collect::<Vec<_>>();
 
