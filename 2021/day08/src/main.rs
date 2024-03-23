@@ -110,13 +110,13 @@ fn part2(all_digits: &[(Vec<Vec<char>>, Vec<Vec<char>>)]) {
             // Get the known digits
             match unique_signal_pattern.len() {
                 // 2 segments => digit 1
-                2 => digits[1] = unique_signal_pattern.clone(),
+                2 => digits[1].clone_from(unique_signal_pattern),
                 // 4 segments => digit 4
-                4 => digits[4] = unique_signal_pattern.clone(),
+                4 => digits[4].clone_from(unique_signal_pattern),
                 // 3 segments => digit 7
-                3 => digits[7] = unique_signal_pattern.clone(),
+                3 => digits[7].clone_from(unique_signal_pattern),
                 // 7 segments => digit 8
-                7 => digits[8] = unique_signal_pattern.clone(),
+                7 => digits[8].clone_from(unique_signal_pattern),
                 _ => (),
             }
         }

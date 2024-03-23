@@ -44,7 +44,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
 
         // Use the result of this round as a basis for the next one
-        characters = result.clone();
+        characters.clone_from(&result);
 
         // Stop if no seat was changed
         if !changed_seat {
