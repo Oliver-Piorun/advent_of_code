@@ -47,7 +47,7 @@ fn part1() -> i32 {
                     tail.1 += 1;
                 }
 
-                visited.insert((tail.0 as i32) << 16 | tail.1 as i32 & 0xFFFF);
+                visited.insert(((tail.0 as i32) << 16) | tail.1 as i32 & 0xFFFF);
             }
         }
     }
@@ -99,7 +99,7 @@ fn part2() -> i32 {
                     }
 
                     if i == 8 {
-                        visited.insert(tail.0 << 16 | tail.1 & 0xFFFF);
+                        visited.insert((tail.0 << 16) | tail.1 & 0xFFFF);
                     }
                 }
             }
