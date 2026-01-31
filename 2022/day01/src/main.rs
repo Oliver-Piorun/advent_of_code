@@ -19,9 +19,8 @@ fn part1() -> i32 {
 fn part2() -> i32 {
     let mut calorie_sums = get_calorie_sums();
     calorie_sums.sort_unstable_by(|a, b| b.cmp(a));
-    let calories = calorie_sums.iter().take(3).sum::<i32>();
 
-    calories
+    calorie_sums.iter().take(3).sum::<i32>()
 }
 
 #[inline(always)]

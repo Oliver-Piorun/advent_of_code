@@ -13,12 +13,11 @@ fn part1() -> i32 {
     let mut dir_sizes = Vec::<i32>::new();
 
     get_dir_size(input, &mut 0, &mut dir_sizes);
-    let total_dir_size_lte_100k = dir_sizes
+
+    dir_sizes
         .iter()
         .filter(|&&dir_size| dir_size <= 100_000)
-        .sum();
-
-    total_dir_size_lte_100k
+        .sum()
 }
 
 #[inline(always)]

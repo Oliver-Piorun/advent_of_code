@@ -5,7 +5,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let input = read_to_string("input")?;
     let passports: Vec<&str> = input.split("\r\n\r\n").collect();
 
-    let required_field_regexs = vec![
+    let required_field_regexs = &[
         Regex::new(r"\bbyr:(19[2-9]\d|200[0-2])\b")?,
         Regex::new(r"\biyr:20(1\d|20)\b")?,
         Regex::new(r"\beyr:20(2\d|30)\b")?,
