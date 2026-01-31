@@ -9,32 +9,32 @@ year  day    part 1          part 2
 -------------------------------------------
 2020    <Not optimized/benchmarked>
 2021    <Not optimized/benchmarked>
-2022  day01         8.90 μs         9.76 μs
-2022  day02         2.45 μs         8.90 μs
-2022  day03        32.83 μs        44.00 μs
-2022  day04         9.83 μs         9.78 μs
-2022  day05        12.39 μs        35.05 μs
-2022  day06         8.61 μs        17.07 μs
-2022  day07         5.72 μs         5.83 μs
-2022  day08        84.20 μs       270.52 μs
-2022  day09       257.82 μs       373.41 μs
-2022  day10         0.36 μs         0.91 μs
-2023  day01        20.80 μs        66.51 μs
-2023  day02         6.78 μs         7.17 μs
-2023  day03        53.64 μs        45.80 μs
-2023  day04        25.84 μs        26.52 μs
-2023  day05         9.12 μs        15.47 μs
-2023  day06         0.17 μs         0.04 μs
-2023  day07       147.96 μs       250.10 μs
-2023  day08        57.09 μs       321.09 μs
-2023  day09        94.91 μs        94.11 μs
-2023  day10        91.46 μs        99.71 μs
+2022  day01         4.30 μs         5.21 μs
+2022  day02         1.60 μs         1.91 μs
+2022  day03        11.87 μs        25.78 μs
+2022  day04         5.13 μs         5.39 μs
+2022  day05         6.88 μs        14.34 μs
+2022  day06         3.45 μs         6.64 μs
+2022  day07         2.66 μs         2.68 μs
+2022  day08       111.07 μs       159.97 μs
+2022  day09       168.54 μs       197.56 μs
+2022  day10         0.21 μs         0.48 μs
+2023  day01         7.08 μs        24.83 μs
+2023  day02         2.34 μs         3.11 μs
+2023  day03        18.64 μs        16.26 μs
+2023  day04         9.29 μs         9.24 μs
+2023  day05         3.86 μs         5.68 μs
+2023  day06         0.07 μs         0.02 μs
+2023  day07        42.25 μs        84.00 μs
+2023  day08        30.34 μs       140.47 μs
+2023  day09        38.76 μs        38.28 μs
+2023  day10        21.38 μs        26.07 μs
 -------------------------------------------
 1 μs = 0.001 ms
 ```
 
 Technical details:
 
-- rustc 1.85.0-nightly (9c707a8b7 2024-12-07)
-- Intel Core i5-8600k @ ~4.15 GHz (6 physical cores)
-- Windows 10
+- rustc 1.95.0-nightly (a293cc4af 2026-01-30)
+- Intel Core Ultra 7 265K @ stock clocks (20 physical cores: 8 performance cores, 12 efficient cores)
+- Windows 11
