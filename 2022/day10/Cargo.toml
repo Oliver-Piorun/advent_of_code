@@ -2,7 +2,7 @@
 name = "day10_2022"
 version = "0.1.0"
 authors = ["Oliver Piorun <Oliver.Piorun@ruhr-uni-bochum.de>"]
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -213,7 +213,7 @@ fn get_num_enclosed_tiles(area: u32, num_loop_points: usize) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::{black_box, Bencher};
+    use test::{Bencher, black_box};
 
     #[test]
     fn test_part1() {

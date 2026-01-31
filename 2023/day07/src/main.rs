@@ -231,7 +231,7 @@ fn read_value(input: &[u8], input_index: &mut usize) -> u16 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::{black_box, Bencher};
+    use test::{Bencher, black_box};
 
     #[test]
     fn test_part1() {

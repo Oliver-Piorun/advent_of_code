@@ -152,7 +152,7 @@ fn get_possibilities(time_record: u64, distance_record: u64) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::{black_box, Bencher};
+    use test::{Bencher, black_box};
 
     #[test]
     fn test_part1() {

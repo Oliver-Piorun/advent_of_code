@@ -75,7 +75,7 @@ fn part2() -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::{black_box, Bencher};
+    use test::{Bencher, black_box};
 
     #[test]
     fn test_part1() {

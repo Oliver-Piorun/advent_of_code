@@ -3,8 +3,8 @@
 extern crate test;
 
 use std::collections::{
-    hash_map::Entry::{Occupied, Vacant},
     HashMap,
+    hash_map::Entry::{Occupied, Vacant},
 };
 
 fn main() {
@@ -184,7 +184,7 @@ fn get_last_letter(combined_index: usize) -> char {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use test::{black_box, Bencher};
+    use test::{Bencher, black_box};
 
     #[test]
     fn test_part1() {
